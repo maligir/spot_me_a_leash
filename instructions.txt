@@ -1,0 +1,17 @@
+inputs from the leash will be int his format:
+
+[speed, direction]
+
+speed = stop, crawl, pace, trot, jog
+direction = number representing a clock face direction [0, 12)
+
+what movements do we allow:
+- rotate_body
+- step
+- goto
+- trot
+- pace
+- crawl
+- jog
+- stop
+- turn_2step
