@@ -3,7 +3,7 @@ from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 
 if __name__ == '__main__':
-    ros_pub = rospy.Publisher('cmd_vel', Twist)
+    ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
     rospy.init_node('spot_cmd_vel')
     msg = Twist()
     msg.linear.x = 0.3
