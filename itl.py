@@ -8,7 +8,7 @@ if __name__ == '__main__':
     rate = rospy.Rate(60)
     while not rospy.is_shutdown():
         msg = Twist()
-        msg.linear.x = -0.3
+        msg.linear.x = 0.3
         msg.linear.y = 0.0
         msg.linear.z = 0.0
         msg.angular.x = 0.0
