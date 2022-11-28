@@ -23,4 +23,4 @@ if __name__ == '__main__':
 
     rospy.init_node('spot_velodyne_points', anonymous=True)
     ros_vel = rospy.Subscriber('velodyne_points', PointCloud2, callback)
-    rospy.spin()
+    # rospy.spin()
