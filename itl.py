@@ -9,7 +9,7 @@ def callback(data):
 if __name__ == '__main__':
     # ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
     # rospy.init_node('spot_cmd_vel')
-    # rate = rospy.Rate(60)
+    rate = rospy.Rate(1)
     # while not rospy.is_shutdown():
     #     msg = Twist()
     #     msg.linear.x = 0.3
@@ -23,4 +23,5 @@ if __name__ == '__main__':
 
     rospy.init_node('spot_velodyne_points', anonymous=True)
     ros_vel = rospy.Subscriber('velodyne_points', PointCloud2, callback)
-    # rospy.spin()
+    rospy.spin()
+    rate.sleep()
