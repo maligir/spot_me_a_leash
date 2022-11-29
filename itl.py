@@ -31,7 +31,8 @@ class itl_run:
             ros_pub.publish(msg)
             # rospy.spin()
             rate.sleep()
-
-
+if __name__ == '__main__':
+    app_prog = itl_run()
+    app_prog.run_prog()
         # rospy.init_node('spot_cmd_vel')
 
