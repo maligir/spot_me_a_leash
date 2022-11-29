@@ -13,16 +13,16 @@ def user_input(msg: Twist, can_get: int) -> Twist:
             pass
         elif (u_input == 'w'):
             msg.linear.x = 0.3
-            msg.linear.z = 0.0
+            msg.angular.z = 0.0
         elif (u_input == 's'):
             msg.linear.x = -0.3
-            msg.linear.z = 0.0   
+            msg.angular.z = 0.0   
         elif (u_input == 'a'):
             msg.linear.x = 0.0
-            msg.linear.z = -0.2
+            msg.angular.z = -0.3
         elif (u_input == 'd'):
             msg.linear.x = 0.0
-            msg.linear.z = 0.2
+            msg.angular.z = 0.3
  
     return msg
 
