@@ -4,10 +4,10 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import PointCloud2
 
 global direction
-direction = ""
 
 def callback(data):
     direction = data.data
+    print(direction)
     rospy.loginfo("I heard %s", direction)
     
 def print_dir():
@@ -21,7 +21,7 @@ if __name__ == '__main__':
     rate = rospy.Rate(60)
     while not rospy.is_shutdown():
         # print(direction)
-        print_dir()
+        # print_dir()
         msg = Twist()
         msg.angular.x = 0.0
         msg.angular.y = 0.0
