@@ -11,9 +11,10 @@ if __name__ == '__main__':
     x = 0
     while not rospy.is_shutdown():
         # ros_pub.publish(input('Enter a direction (w, a, s, d)'))
-        x = 'w'
+        x=sys.stdin.read(1)[0]
         ros_pub.publish(x)
         rate.sleep()
+    termios.tcsetattr(sys.stdin, termios.TCSADRAIN,filedescriptors)
 
 
 
