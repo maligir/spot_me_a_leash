@@ -60,7 +60,7 @@ if __name__ == '__main__':
     # rate = rospy.Rate(60)
     # can_get = 0
     # msg = Twist()
-    msg.angular.x = 0.0
+    msg.angular.x = 0.3
     msg.angular.y = 0.0
     msg.angular.z = 0.0
     msg.linear.x = 0.0
