@@ -2,7 +2,7 @@ import rospy
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import PointCloud2
-import keyboard
+import keyboard as kb
 
 def callback(data):
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
@@ -27,25 +27,26 @@ def user_input(msg: Twist, can_get: int) -> Twist:
  
     return msg
 
-def go_forward():
-    msg.linear.x = 0.3
-    msg.angular.z = 0.0
+# def go_forward():
+#     msg.linear.x = 0.3
+#     msg.angular.z = 0.0
 
-def go_backward():
-    msg.linear.x = -0.3
-    msg.angular.z = 0.0 
+# def go_backward():
+#     msg.linear.x = -0.3
+#     msg.angular.z = 0.0 
 
-def turn_left():
-    msg.linear.x = 0.0
-    msg.angular.z = 0.3
+# def turn_left():
+#     msg.linear.x = 0.0
+#     msg.angular.z = 0.3
 
-def turn_right():
-    msg.linear.x = 0.0
-    msg.angular.z = -0.3
+# def turn_right():
+#     msg.linear.x = 0.0
+#     msg.angular.z = -0.3
 
 def stop():
-    msg.linear.x = 0.0
-    msg.angular.z = 0.0
+    # msg.linear.x = 0.0
+    # msg.angular.z = 0.0
+    pass
 
 
 if __name__ == '__main__':
@@ -62,7 +63,13 @@ if __name__ == '__main__':
     msg.linear.z = 0.0
     while not rospy.is_shutdown():
         can_get+=1
-        ros_pub.publish(user_input(msg, can_get))
+        # kb.add_hotkey('w', lambda: go_forward())
+        # kb.add_hotkey('d', lambda: go_backward())
+        # kb.add_hotkey('a', lambda: turn_left())
+        # kb.add_hotkey('d', lambda: turn_right())
+        kb.add_hotkey('enter', lambda: stop())
+        # ros_pub.publish(user_input(msg, can_get))
+        ros_pub.publish(msg)
         rate.sleep()
 
     # rospy.init_node('spot_velodyne_points', anonymous=True)
