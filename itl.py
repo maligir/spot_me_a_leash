@@ -4,13 +4,15 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import PointCloud2
 
 global direction
+direction = ""
 
 def callback(data):
     direction = data.data
     rospy.loginfo("I heard %s", direction)
     
 def print_dir():
-    print(direction)
+    if (direction != None):
+        print(direction)
 
 if __name__ == '__main__':
     ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
