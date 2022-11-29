@@ -42,6 +42,9 @@ class itl_run:
             elif (self.direction == 'd'):
                 self.msg.linear.x = 0.0
                 self.msg.angular.z = -0.3
+            elif (self.direction == 'z'):
+                self.msg.linear.x = 0.0
+                self.msg.angular.z = 0.0
             ros_pub.publish(self.msg)
             rate.sleep()
 if __name__ == '__main__':
