@@ -25,7 +25,7 @@ if __name__ == '__main__':
         msg.linear.y = 0.0
         msg.linear.z = 0.0
         ros_pub.publish(msg)
-        rospy.spin()
+        # rospy.spin()
         rate.sleep()
 
 
