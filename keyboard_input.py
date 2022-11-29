@@ -8,10 +8,11 @@ if __name__ == '__main__':
     rate = rospy.Rate(60)
     filedescriptors = termios.tcgetattr(sys.stdin)
     tty.setcbreak(sys.stdin)
-    x = 0
+    x = 'w'
     while not rospy.is_shutdown():
-        x = sys.stdin.read(1)[0]
+        # x = sys.stdin.read(1)[0]
         ros_pub.publish(x)
+        # ros_pub.publish(input())
         rate.sleep()
 
 
