@@ -6,7 +6,7 @@ from sensor_msgs.msg import PointCloud2
 class itl_run:
 
     def __init__(self) -> None:
-        self.direction = 0
+        self.direction = ""
         self.msg = Twist()
         self.msg.angular.x = 0.0
         self.msg.angular.y = 0.0
