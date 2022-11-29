@@ -2,12 +2,11 @@ import rospy
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import PointCloud2
-import tty, sys, termios
 
 class itl_run:
 
     def __init__(self) -> None:
-        self.direction = ""
+        self.direction = 0
         self.msg = Twist()
         self.msg.angular.x = 0.0
         self.msg.angular.y = 0.0
