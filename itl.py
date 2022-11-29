@@ -19,10 +19,10 @@ def user_input(msg: Twist, can_get: int) -> Twist:
             msg.angular.z = 0.0   
         elif (u_input == 'a'):
             msg.linear.x = 0.0
-            msg.angular.z = -0.3
+            msg.angular.z = 0.3
         elif (u_input == 'd'):
             msg.linear.x = 0.0
-            msg.angular.z = 0.3
+            msg.angular.z = -0.3
  
     return msg
 
