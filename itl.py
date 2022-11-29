@@ -8,6 +8,13 @@ class itl_run:
 
     def __init__(self) -> None:
         self.direction = ""
+        self.msg = Twist()
+        self.msg.angular.x = 0.0
+        self.msg.angular.y = 0.0
+        self.msg.angular.z = 0.0
+        self.msg.linear.x = 0.0
+        self.msg.linear.y = 0.0
+        self.msg.linear.z = 0.0
 
     def callback(self, data):
         self.direction = data.data
@@ -21,15 +28,21 @@ class itl_run:
         rate = rospy.Rate(60)
         while not rospy.is_shutdown():
             print(self.direction)
-            msg = Twist()
-            msg.angular.x = 0.0
-            msg.angular.y = 0.0
-            msg.angular.z = 0.0
-            msg.linear.x = 0.3
-            msg.linear.y = 0.0
-            msg.linear.z = 0.0
-            ros_pub.publish(msg)
-            # rospy.spin()
+            if (self.direction == ''):
+                pass
+            elif (self.direction == 'w'):
+                self.msg.linear.x = 0.3
+                self.msg.angular.z = 0.0
+            elif (self.direction == 's'):
+                self.msg.linear.x = -0.3
+                self.msg.angular.z = 0.0   
+            elif (self.direction == 'a'):
+                self.msg.linear.x = 0.0
+                self.msg.angular.z = 0.3
+            elif (self.direction == 'd'):
+                self.msg.linear.x = 0.0
+                self.msg.angular.z = -0.3
+            ros_pub.publish(self.msg)
             rate.sleep()
 if __name__ == '__main__':
     app_prog = itl_run()
