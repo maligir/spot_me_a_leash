@@ -2,8 +2,7 @@ import rospy
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import PointCloud2
-from pynput import keyboard
-from pynput.keyboard import Key
+import keyboard
 
 ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
 rospy.init_node('spot_cmd_vel')
@@ -54,24 +53,6 @@ def stop():
     msg.linear.x = 0.0
     msg.angular.z = 0.0
 
-def on_press(key):
-    #handle pressed keys
-    pass
-
-def on_release(key):
-    #handle released keys
-    if(key==Key.enter):
-        stop()
-    elif(key==Key.up):
-        go_forward()
-    elif(key==Key.down):
-        go_backward()
-    elif(key==Key.left):
-        turn_left()
-    elif(key==Key.right):
-        turn_right()
-
-
 
 if __name__ == '__main__':
     # ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
@@ -87,13 +68,11 @@ if __name__ == '__main__':
     msg.linear.z = 0.0
     while not rospy.is_shutdown():
         # can_get+=1
-        # keyboard.add_hotkey('w', lambda: go_forward())
-        # keyboard.add_hotkey('d', lambda: go_backward())
-        # keyboard.add_hotkey('a', lambda: turn_left())
-        # keyboard.add_hotkey('d', lambda: turn_right())
-        # keyboard.add_hotkey('enter', lambda: stop())
-        with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
-            listener.join()
+        keyboard.add_hotkey('w', lambda: go_forward())
+        keyboard.add_hotkey('d', lambda: go_backward())
+        keyboard.add_hotkey('a', lambda: turn_left())
+        keyboard.add_hotkey('d', lambda: turn_right())
+        keyboard.add_hotkey('enter', lambda: stop())
         ros_pub.publish(msg)
         rate.sleep()
 
