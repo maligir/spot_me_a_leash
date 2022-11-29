@@ -7,22 +7,22 @@ def callback(data):
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
 
 def user_input(msg: Twist, can_get: int) -> Twist:
-    if(can_get%600 == 0):
+    if(can_get%100 == 0):
         u_input = input('Enter a direction (w, a, s, d)')
         if (u_input == ''):
             pass
         elif (u_input == 'w'):
-            msg.linear.x = 0.3
+            msg.linear.x += 0.1
             msg.angular.z = 0.0
         elif (u_input == 's'):
-            msg.linear.x = -0.3
+            msg.linear.x += -0.1
             msg.angular.z = 0.0   
         elif (u_input == 'a'):
             msg.linear.x = 0.0
-            msg.angular.z = 0.3
+            msg.angular.z += 0.1
         elif (u_input == 'd'):
             msg.linear.x = 0.0
-            msg.angular.z = -0.3
+            msg.angular.z += -0.1
  
     return msg
 
