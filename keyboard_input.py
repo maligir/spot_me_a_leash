@@ -10,7 +10,9 @@ if __name__ == '__main__':
     tty.setcbreak(sys.stdin)
     x = 0
     while not rospy.is_shutdown():
-        ros_pub.publish(input('Enter a direction (w, a, s, d)'))
+        # ros_pub.publish(input('Enter a direction (w, a, s, d)'))
+        x = 'w'
+        ros_pub.publish(x)
         rate.sleep()
 
 
