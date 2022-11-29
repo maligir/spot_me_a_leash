@@ -6,15 +6,8 @@ from sensor_msgs.msg import PointCloud2
 def callback(data):
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
 
-def user_input() -> Twist:
+def user_input(msg: Twist) -> Twist:
     u_input = input('Enter a direction (w, a, s, d)')
-    msg = Twist()
-    msg.angular.x = 0.0
-    msg.angular.y = 0.0
-    msg.angular.z = 0.0
-    msg.linear.x = 0.0
-    msg.linear.y = 0.0
-    msg.linear.z = 0.0
     if (u_input == ''):
         pass
     elif (u_input == 'w'):
@@ -37,8 +30,14 @@ if __name__ == '__main__':
     ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
     rospy.init_node('spot_cmd_vel')
     rate = rospy.Rate(60)
+    msg = Twist()
+    msg.angular.x = 0.0
+    msg.angular.y = 0.0
+    msg.angular.z = 0.0
+    msg.linear.x = 0.0
+    msg.linear.y = 0.0
+    msg.linear.z = 0.0
     while not rospy.is_shutdown():
-        
         ros_pub.publish(user_input())
         rate.sleep()
 
