@@ -21,7 +21,7 @@ if __name__ == '__main__':
         msg.angular.x = 0.0
         msg.angular.y = 0.0
         msg.angular.z = 0.0
-        msg.linear.x = 0.0
+        msg.linear.x = 0.3
         msg.linear.y = 0.0
         msg.linear.z = 0.0
         ros_pub.publish(msg)
