@@ -72,7 +72,7 @@ if __name__ == '__main__':
         # keyboard.add_hotkey('d', lambda: go_backward())
         # keyboard.add_hotkey('a', lambda: turn_left())
         # keyboard.add_hotkey('d', lambda: turn_right())
-        keyboard.add_hotkey('enter', lambda: stop())
+        # keyboard.add_hotkey('enter', lambda: stop())
         ros_pub.publish(msg)
         rate.sleep()
 
