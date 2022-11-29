@@ -63,12 +63,16 @@ if __name__ == '__main__':
     msg.linear.z = 0.0
     while not rospy.is_shutdown():
         can_get+=1
-        # kb.add_hotkey('w', lambda: go_forward())
-        # kb.add_hotkey('d', lambda: go_backward())
-        # kb.add_hotkey('a', lambda: turn_left())
-        # kb.add_hotkey('d', lambda: turn_right())
-        kb.add_hotkey('enter', lambda: stop())
-        # ros_pub.publish(user_input(msg, can_get))
+        try:
+            # kb.add_hotkey('w', lambda: go_forward())
+            # kb.add_hotkey('d', lambda: go_backward())
+            # kb.add_hotkey('a', lambda: turn_left())
+            # kb.add_hotkey('d', lambda: turn_right())
+            kb.add_hotkey('enter', lambda: stop())
+            # ros_pub.publish(user_input(msg, can_get))
+        except Exception as er:
+            print('error occured')
+            pass
         ros_pub.publish(msg)
         rate.sleep()
 
