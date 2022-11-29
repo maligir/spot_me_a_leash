@@ -2,6 +2,7 @@ import rospy
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import PointCloud2
+import keyboard
 
 def callback(data):
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
