@@ -38,7 +38,7 @@ if __name__ == '__main__':
     msg.linear.y = 0.0
     msg.linear.z = 0.0
     while not rospy.is_shutdown():
-        ros_pub.publish(user_input())
+        ros_pub.publish(user_input(msg))
         rate.sleep()
 
     # rospy.init_node('spot_velodyne_points', anonymous=True)
