@@ -26,6 +26,26 @@ def user_input(msg: Twist, can_get: int) -> Twist:
  
     return msg
 
+def go_forward():
+    msg.linear.x = 0.3
+    msg.angular.z = 0.0
+
+def go_backward():
+    msg.linear.x = -0.3
+    msg.angular.z = 0.0 
+
+def turn_left():
+    msg.linear.x = 0.0
+    msg.angular.z = 0.3
+
+def turn_right():
+    msg.linear.x = 0.0
+    msg.angular.z = -0.3
+
+def stop():
+    msg.linear.x = 0.0
+    msg.angular.z = 0.0
+
 
 if __name__ == '__main__':
     ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
