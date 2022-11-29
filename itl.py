@@ -2,19 +2,12 @@ import rospy
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import PointCloud2
-import keyboard
-
-ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
-rospy.init_node('spot_cmd_vel')
-rate = rospy.Rate(60)
-msg = Twist()
 
 def callback(data):
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
 
 def user_input(msg: Twist, can_get: int) -> Twist:
     if(can_get%100 == 0):
-
         u_input = input('Enter a direction (w, a, s, d)')
         if (u_input == ''):
             pass
@@ -33,47 +26,22 @@ def user_input(msg: Twist, can_get: int) -> Twist:
  
     return msg
 
-def go_forward():
-    msg.linear.x = 0.3
-    msg.angular.z = 0.0
-
-def go_backward():
-    msg.linear.x = -0.3
-    msg.angular.z = 0.0 
-
-def turn_left():
-    msg.linear.x = 0.0
-    msg.angular.z = 0.3
-
-def turn_right():
-    msg.linear.x = 0.0
-    msg.angular.z = -0.3
-
-def stop():
-    msg.linear.x = 0.0
-    msg.angular.z = 0.0
-
 
 if __name__ == '__main__':
-    # ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
-    # rospy.init_node('spot_cmd_vel')
-    # rate = rospy.Rate(60)
-    # can_get = 0
-    # msg = Twist()
-    msg.angular.x = 0.3
+    ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+    rospy.init_node('spot_cmd_vel')
+    rate = rospy.Rate(60)
+    can_get = 0
+    msg = Twist()
+    msg.angular.x = 0.0
     msg.angular.y = 0.0
     msg.angular.z = 0.0
     msg.linear.x = 0.0
     msg.linear.y = 0.0
     msg.linear.z = 0.0
     while not rospy.is_shutdown():
-        # can_get+=1
-        # keyboard.add_hotkey('w', lambda: go_forward())
-        # keyboard.add_hotkey('d', lambda: go_backward())
-        # keyboard.add_hotkey('a', lambda: turn_left())
-        # keyboard.add_hotkey('d', lambda: turn_right())
-        # keyboard.add_hotkey('enter', lambda: stop())
-        ros_pub.publish(msg)
+        can_get+=1
+        ros_pub.publish(user_input(msg, can_get))
         rate.sleep()
 
     # rospy.init_node('spot_velodyne_points', anonymous=True)
