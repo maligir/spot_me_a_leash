@@ -45,8 +45,14 @@ class itl_run:
             elif (self.direction == 'z'):
                 self.msg.linear.x = 0.0
                 self.msg.angular.z = 0.0
+            
+            if self.msg.linear.x > 0 and self.msg.linear.x < 0.2 and self.direction == 'w':
+                self.msg.linear.x = 0.2
+            elif self.msg.linear.x < 0 and self.msg.linear.x > -0.2 and self.direction == 's':
+                self.msg.linear.x = -0.2
             self.direction = ''
             ros_pub.publish(self.msg)
+            print(self.msg.linear.x)
             rate.sleep()
 if __name__ == '__main__':
     app_prog = itl_run()
