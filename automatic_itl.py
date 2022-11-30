@@ -50,15 +50,22 @@ class itl_run:
                 self.msg.linear.x = 0.2
             elif self.msg.linear.x < 0 and self.msg.linear.x > -0.2 and self.direction == 's':
                 self.msg.linear.x = -0.2
+            elif self.msg.angular.z > 0 and self.msg.angular.z < 0.2 and self.direction == 'a':
+                self.msg.angular.z = 0.2
+            elif self.msg.angular.z < 0 and self.msg.angular.z > -0.2 and self.direction == 'd':
+                self.msg.angular.z = -0.2
             elif self.msg.linear.x > 1.9:
                 self.msg.linear.x = 1.9
             elif self.msg.linear.x < -1.9:
                 self.msg.linear.x = -1.9
+            elif self.msg.angular.z > 1.5:
+                self.msg.angular.z = 1.5
+            elif self.msg.angular.z < -1.5:
+                self.msg.angular.z = -1.5
+
             self.direction = ''
             ros_pub.publish(self.msg)
-            print(self.msg.angular.z)
             rate.sleep()
-            # 1.9, -1.9
 if __name__ == '__main__':
     app_prog = itl_run()
     app_prog.run_prog()
