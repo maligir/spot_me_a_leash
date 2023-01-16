@@ -13,7 +13,7 @@ Terminal 2
 export ROS_MASTER_URI=http://10.0.0.131:11311
 export ROS_IP=10.0.0.131
 ssh amrl-user@10.0.0.131
-docker exec -it (tab) bash
+docker exec -it ros-docker_app_1 bash
 source catkin_ws/devel/setup.bash
 export ROS_PACKAGE_PATH=/home/amrl-user/spot_autonomy:$ROS_PACKAGE_PATH
 roslaunch spot_autonomy start_all.launch
@@ -29,7 +29,7 @@ Terminal 4
 export ROS_MASTER_URI=http://10.0.0.131:11311
 export ROS_IP=10.0.0.131
 ssh amrl-user@10.0.0.131
-docker exec -it (tab) bash
+docker exec -it ros-docker_app_1 bash
 roslaunch velodyne_pointcloud VLP16_points.launch
 ctrl + c
 roslaunch velodyne_pointcloud VLP16_points.launch
