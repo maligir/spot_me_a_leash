@@ -15,16 +15,10 @@ export ROS_IP=10.0.0.131
 ssh amrl-user@10.0.0.131
 docker exec -it ros-docker_app_1 bash
 source catkin_ws/devel/setup.bash
-export ROS_PACKAGE_PATH=/home/amrl-user/spot_autonomy:$ROS_PACKAGE_PATH
+export ROS_PACKAGE_PATH=/home/amrl-user/spot_rahul_anushka/spot_me_a_leash/spot_autonomy:$ROS_PACKAGE_PATH
 roslaunch spot_autonomy start_all.launch
 
 Terminal 3
-
-export ROS_MASTER_URI=http://10.0.0.131:11311
-export ROS_IP=10.0.0.131
-rosrun teleop_twist_keyboard teleop_twist_keyboard.py
-
-Terminal 4
 
 export ROS_MASTER_URI=http://10.0.0.131:11311
 export ROS_IP=10.0.0.131
@@ -34,28 +28,31 @@ roslaunch velodyne_pointcloud VLP16_points.launch
 ctrl + c
 roslaunch velodyne_pointcloud VLP16_points.launch
 
+Terminal 4
+
+export ROS_MASTER_URI=http://10.0.0.131:11311
+export ROS_IP=10.0.0.131
+ssh amrl-user@10.0.0.131
+docker exec -it ros-docker_app_1 bash
+rosrun gmapping slam_gmapping scan:=scan odom_frame:=odom
+
 Terminal 5
 
 export ROS_MASTER_URI=http://10.0.0.131:11311
 export ROS_IP=10.0.0.131
-cd spot_ra_workspace
-source devel/setup.bash
-rosrun drive_controller drive_controller_node //fix the code in this to link odom to spot properly
+rosrun rviz rviz
 
 Terminal 6
 
 export ROS_MASTER_URI=http://10.0.0.131:11311
 export ROS_IP=10.0.0.131
-rosrun gmapping slam_gmapping scan:=scan
-
-Terminal 7
-
-export ROS_MASTER_URI=http://10.0.0.131:11311
-export ROS_IP=10.0.0.131
-rosrun rqt_logger_level rqt_logger_level //set gmapping to debug
-
-Terminal 8
-
-export ROS_MASTER_URI=http://10.0.0.131:11311
-export ROS_IP=10.0.0.131
-rosrun rviz rviz -f velodyne
+ssh amrl-user@10.0.0.131
+cd spot_rahul_anushka/spot_me_a_leash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+docker exec -it ros-docker_app_1 bash
+cd spot_rahul_anushka/spot_me_a_leash
+source venv/bin/activate
+cd rl_spot
+python run_sim.py
