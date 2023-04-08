@@ -1,2 +1,0 @@
-uint8 floor_cmd
-bool hold_door

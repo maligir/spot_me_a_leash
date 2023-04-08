@@ -1,8 +1,0 @@
-bin
-build
-lib
-msg_gen
-src/enml
-.vscode
-config/robot.lua
-data
