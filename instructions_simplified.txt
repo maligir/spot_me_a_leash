@@ -34,6 +34,9 @@ export ROS_MASTER_URI=http://10.0.0.131:11311
 export ROS_IP=10.0.0.131
 ssh amrl-user@10.0.0.131
 docker exec -it ros-docker_app_1 bash
+sudo apt update
+sudo apt install ros-noetic-gmapping
+source /opt/ros/noetic/setup.bash
 rosrun gmapping slam_gmapping scan:=scan odom_frame:=odom
 
 Terminal 5
