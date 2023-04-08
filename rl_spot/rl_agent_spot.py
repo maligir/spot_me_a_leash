@@ -1,21 +1,44 @@
-# this file is frontier exploration (this runs every time new map is generated)
+import numpy as np
 
-# constantly read in the map
-# done using nav_msgs/OccupancyGrid (subscribe to /map)
-# use rospy to accommplish above (follow tutorial)
+# ACTIONS = {'U': (-1, 0), 'D': (1, 0), 'L': (0, -1), 'R': (0, 1)}
+# ACTIONS = publish to cmd vel one direction (up, down, left, right)
+# ACTIONS = publish to cmd vel/nav goal 360 degrees of rotation and forward movement
 
-# repeat below steps with current map as the input
+class Agent(object):
+    def __init__(self, states, alpha=0.15, random_factor=0.2): # 80% explore, 20% exploit
+        self.state_history = [((0, 0), 0)] # state, reward
+        self.alpha = alpha
+        self.randomFactor = random_factor
+        # self.G = np.gauss(0 to 360 degrees) to set initial rewards
+    
+    def choose_action(self, state):
+        next_move = None
+        randomN = np.random.random()
+        if randomN < self.randomFactor:
+            # if random number below random factor, choose random action
+            # next move = closest/farthest frontier
+            pass
+        else:
+            # if exploiting, gather all possible actions and choose one with the highest G (reward)
+            # next move = we move in the direction of the higheset G
+            # move in that direction
+            pass
+        
+        return next_move
 
-# find the frontiers
-# with ocupancy grid check for borders with -1
-# add all frontiers to frontier list (priority queue)
-# closest frontier is at front of the list
+    def update_state_history(self, state, reward):
+        self.state_history.append((state, reward))
 
-# select frontier closest/farthest to robot (just pop from queue) that is not in visited set
-# add new frontier to the visited set
+    def learn(self):
+        target = 0
+        
+        # for every state and reward (prev occupancy grid and value of direction to move)
+        # update the value of the direction to move
 
-# move robot to just a certain distance away from it - cmd_vel
-# move robot to frontier - publish move_base/goal to move_base
-# publish to move_base/goal to move_base
+        for prev, reward in reversed(self.state_history):
+            self.G[prev] = self.G[prev] + self.alpha * (target - self.G[prev])
+            target += reward
 
-# repeat
+        self.state_history = []
+
+        self.randomFactor -= 10e-5 # decrease random factor each episode of play
