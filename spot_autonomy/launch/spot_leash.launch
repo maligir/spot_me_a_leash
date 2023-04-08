@@ -1,0 +1,72 @@
+<launch>
+  <!-- Start Velodyne, and 3D to 2D conversions -->
+  <include file="$(find spot_autonomy)/launch/velodyne.launch" />
+
+  <!-- <include file="$(find spot_autonomy)/launch/start_spot_interface.launch" />   -->
+  <include file="$(find spot_autonomy)/launch/start_clearpath_spot.launch" />
+
+  <node name="websocket" 
+      pkg="spot_autonomy"
+      type="websocket"
+      args="scan:=scan" 
+      respawn="true"
+      respawn_delay="2" />
+
+  <node name="enml" 
+      pkg="spot_autonomy"
+      type="enml"
+      args="-d0 -c $(find spot_autonomy)/config -r spot_leash_enml.lua -m $(find spot_autonomy)/maps" 
+      respawn="true"
+      respawn_delay="2" />
+
+  <!--<node name="robofleet_client" 
+      pkg="spot_autonomy"
+      type="robofleet_client"
+      args=""
+      ns="spot"
+      respawn="true"
+      respawn_delay="2" /> -->
+
+  <!--<node name="status_translator" 
+      pkg="spot_autonomy"
+      type="status_translator"
+      args=""
+      respawn="true"
+      respawn_delay="2" /> -->
+
+  <!--<node name="compress_image_left" 
+      pkg="image_transport"
+      type="republish"
+      args="raw in:=/spot/camera/frontleft/image compressed out:=/spot/camera/frontleft/image"
+      respawn="true"
+      respawn_delay="2" />
+
+  <node name="compress_image_right" 
+      pkg="image_transport"
+      type="republish"
+      args="raw in:=/spot/camera/frontright/image compressed out:=/spot/camera/frontright/image"
+      respawn="true"
+      respawn_delay="2" />
+
+  <node name="compress_image_side_left" 
+      pkg="image_transport"
+      type="republish"
+      args="raw in:=/spot/camera/left/image compressed out:=/spot/camera/left/image"
+      respawn="true"
+      respawn_delay="2" />
+
+  <node name="compress_image_side_right" 
+      pkg="image_transport"
+      type="republish"
+      args="raw in:=/spot/camera/right/image compressed out:=/spot/camera/right/image"
+      respawn="true"
+      respawn_delay="2" />
+
+  <node name="compress_image_back" 
+      pkg="image_transport"
+      type="republish"
+      args="raw in:=/spot/camera/back/image compressed out:=/spot/camera/back/image"
+      respawn="true"
+      respawn_delay="2" /> -->
+
+</launch>

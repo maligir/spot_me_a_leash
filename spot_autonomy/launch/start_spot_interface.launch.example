@@ -1,0 +1,9 @@
+<launch>
+  <node name="spot_ros_interface" 
+      pkg="spot_ros_interface"
+      type="spot_ros_interface.py" 
+      args="--username 'USERNAME' --password 'PASSWORD' 192.168.50.3" 
+      respawn="false" 
+      required="true" />
+      
+</launch>

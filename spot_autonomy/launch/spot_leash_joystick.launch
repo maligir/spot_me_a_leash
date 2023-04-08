@@ -1,0 +1,9 @@
+<launch>
+  <node name="joystick" 
+      pkg="spot_autonomy"
+      type="joystick"
+      args="--v 2 --config $(find spot_autonomy)/config/joystick.lua" 
+      respawn="true"
+      respawn_delay="2"
+      output="screen" />
+</launch>
