@@ -6,7 +6,7 @@ from geometry_msgs.msg import Twist
 
 class fe_run:
     def __init__(self) -> None:
-        self.open_list = {"dist": [], "rad": []}
+        self.open_list = {"dist": [], "rad": [], "x": [], "y": []}
         self.move_info = {"dist": 0, "rad": 0}
         self.msg = Twist()
         self.msg.angular.x = 0.0
@@ -37,12 +37,10 @@ class fe_run:
         cur_x = int(0 - data.info.origin.position.x / data.info.resolution)
         cur_y = int(0 - data.info.origin.position.y / data.info.resolution)
         # find all the frontiers relative to the robot
-        count = 0
         for i in range(0, data.info.height):
             for j in range(0, data.info.width):
                 # TODO add more checks here (cell has to border -1)
                 if data.data[i*data.info.width + j] == 0:
-                    count += 1
                     # find euclidean distance to robot
                     dist = ((cur_x - j)**2 + (cur_y - i)**2)**0.5
                     if dist == 0:
@@ -57,11 +55,13 @@ class fe_run:
                     if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"]:
                         self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
                         self.open_list["rad"] = np.append(self.open_list["rad"], [rad], axis=0)
+                        self.open_list["x"] = np.append(self.open_list["x"], [j], axis=0)
+                        self.open_list["y"] = np.append(self.open_list["y"], [i], axis=0)
         # select the farthest frontier
         max_index = np.argmax(self.open_list["dist"])
         self.move_info["dist"] = self.open_list["dist"][max_index]/data.info.width
         self.move_info["rad"] = self.open_list["rad"][max_index]
-        rospy.loginfo("Moving %s %s %s", type(data.data), type(self.prev_map), self.prev_map == data.data)
+        rospy.loginfo("Moving %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.move_info["x"], self.move_info["y"])
         self.prev_map = data.data
         # mutate close list with the dist and rad of the frontier
         self.closed_list["dist"] = self.closed_list["dist"] - self.move_info["dist"]
