@@ -11,9 +11,9 @@ class fe_run:
         # file1.write(str(data))
         # file1.write(str(data.data))
         # convert data to 2d matrix
-        # temp = []
-        # for i in range(0, data.info.height):
-        #     temp.append(data.data[i*data.info.width:(i+1)*data.info.width])
+        temp = []
+        for i in range(0, data.info.height):
+            temp.append(data.data[i*data.info.width:(i+1)*data.info.width])
         cur_x = int(data.info.origin.position.x / data.info.resolution)
         cur_y = int(data.info.origin.position.y / data.info.resolution)
         # if 0 in temp[0] or 100 in temp[0]:
