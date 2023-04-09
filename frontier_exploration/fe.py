@@ -7,7 +7,6 @@ from geometry_msgs.msg import Twist
 class fe_run:
     def __init__(self) -> None:
         self.open_list = {"dist": [], "rad": [], "x": [], "y": []}
-        self.move_info = {"dist": 0, "rad": 0}
         self.msg = Twist()
         self.msg.angular.x = 0.0
         self.msg.angular.y = 0.0
@@ -18,6 +17,9 @@ class fe_run:
         self.closed_list = {"dist": np.array([]), "rad": np.array([])}
         self.prev_map = None
         self.run_time = 0
+        self.pos_x = 1999
+        self.pos_y = 1999
+        self.move_info = {"dist": 0, "rad": 0}
     
     def callback(self, data):
         # convert data to 2d matrix
@@ -35,25 +37,26 @@ class fe_run:
         self.closed_list["rad"] = np.append(self.closed_list["rad"], [0], axis=0)
         
         # get the robots position in the occupancy grid
-        cur_x = int(0 - data.info.origin.position.x / data.info.resolution)
-        cur_y = int(0 - data.info.origin.position.y / data.info.resolution)
+        # cur_x = int(0 - data.info.origin.position.x / data.info.resolution)
+        # cur_y = int(0 - data.info.origin.position.y / data.info.resolution)
         # find all the frontiers relative to the robot
         for i in range(0, data.info.height):
             for j in range(0, data.info.width):
                 # TODO add more checks here (cell has to border -1)
                 if data.data[i*data.info.width + j] == 0:
                     # find euclidean distance to robot
-                    dist = ((cur_x - j)**2 + (cur_y - i)**2)**0.5
+                    dist = ((self.pos_x - j)**2 + (self.pos_y - i)**2)**0.5
                     if dist == 0:
                         continue
-                    if cur_y-i < 0:
+                    if self.pos_x-i < 0:
                         dist = -dist
-                    if cur_y-i == 0:
+                    if self.pos_y-i == 0:
                         rad = 0
                     else:
-                        rad = -np.arctan((j-cur_x) / (cur_y - i))
+                        rad = -np.arctan((j-self.pos_x) / (self.pos_y - i))
                     # check if the frontier is already in the closed list
                     if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"]:
+                        rospy.loginfo("new frontier %s", dist)
                         self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
                         self.open_list["rad"] = np.append(self.open_list["rad"], [rad], axis=0)
                         self.open_list["x"] = np.append(self.open_list["x"], [j], axis=0)
@@ -62,6 +65,8 @@ class fe_run:
         max_index = np.argmax(self.open_list["dist"])
         self.move_info["dist"] = self.open_list["dist"][max_index]/data.info.width
         self.move_info["rad"] = self.open_list["rad"][max_index]
+        self.pos_x = self.open_list["x"][max_index]
+        self.pos_y = self.open_list["y"][max_index]
         rospy.loginfo("Moving %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index])
         self.prev_map = data.data
         # mutate close list with the dist and rad of the frontier
