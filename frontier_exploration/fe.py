@@ -17,7 +17,7 @@ class fe_run:
         cur_x = int(data.info.origin.position.x / data.info.resolution)
         cur_y = int(data.info.origin.position.y / data.info.resolution)
         if 0 in temp[0] or 100 in temp[0]:
-            print("top")
+            rospy.loginfo("I heard %s %s %s", "0 or 100 found", cur_x, cur_y)
         # rospy.loginfo("I heard %s %s %s", temp, cur_x, cur_y)
         pass
     
