@@ -29,8 +29,8 @@ class fe_run:
         self.open_list["dist"] = []
         self.open_list["rad"] = []
         # add 0,0 to close list
-        self.closed_list["dist"] = np.append(self.closed_list["dist"], [[0]], axis=0)
-        self.closed_list["rad"] = np.append(self.closed_list["rad"], [[0]], axis=0)
+        self.closed_list["dist"] = np.append(self.closed_list["dist"], [0], axis=0)
+        self.closed_list["rad"] = np.append(self.closed_list["rad"], [0], axis=0)
         
         
         # get the robots position in the occupancy grid
@@ -53,8 +53,8 @@ class fe_run:
                         rad = np.arctan((cur_x - i) / (cur_y - j))
                     # check if the frontier is already in the closed list
                     if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"]:
-                        self.open_list["dist"] = np.append(self.open_list["dist"], [[dist]], axis=0)
-                        self.open_list["rad"] = np.append(self.open_list["rad"], [[rad]], axis=0)
+                        self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
+                        self.open_list["rad"] = np.append(self.open_list["rad"], [rad], axis=0)
         # select the farthest frontier
         max_index = np.argmax(self.open_list["dist"])
         self.move_info["dist"] = self.open_list["dist"][max_index]
