@@ -61,7 +61,7 @@ class fe_run:
         max_index = np.argmax(self.open_list["dist"])
         self.move_info["dist"] = self.open_list["dist"][max_index]/data.info.width
         self.move_info["rad"] = self.open_list["rad"][max_index]
-        rospy.loginfo("Moving %s %s", self.move_info["dist"]*4, self.move_info["rad"]/10)
+        rospy.loginfo("Moving %s %s", data.info.origin.position.x, data.info.origin.position.y)
         
         # mutate close list with the dist and rad of the frontier
         self.closed_list["dist"] = self.closed_list["dist"] - self.move_info["dist"]
