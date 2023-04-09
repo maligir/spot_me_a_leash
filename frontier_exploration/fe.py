@@ -34,8 +34,8 @@ class fe_run:
         
         
         # get the robots position in the occupancy grid
-        cur_x = int(data.info.origin.position.x / data.info.resolution)
-        cur_y = int(data.info.origin.position.y / data.info.resolution)
+        cur_x = int(0 - data.info.origin.position.x / data.info.resolution)
+        cur_y = int(0 - data.info.origin.position.y / data.info.resolution)
         # find all the frontiers relative to the robot
         count = 0
         for i in range(0, data.info.height):
