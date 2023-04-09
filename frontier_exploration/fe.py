@@ -10,10 +10,13 @@ class fe_run:
         file1 = open("map_data.txt","w")
         # file1.write(str(data))
         file1.write(str(data.data))
-        temp = data.data
-        # remove all -1s
-        temp = [x for x in temp if x == 100]
-        rospy.loginfo("I heard %s %s", str(len(temp)), set(data.data))
+        # convert data to 2d matrix
+        temp = []
+        for i in range(0, data.info.height):
+            temp.append(data.data[i*data.info.width:(i+1)*data.info.width])
+        cur_x = int(data.info.origin.position.x / data.info.resolution)
+        cur_y = int(data.info.origin.position.y / data.info.resolution)
+        rospy.loginfo("I heard %s %s %s", temp, cur_x, cur_y)
         pass
     
     def run_prog(self):
