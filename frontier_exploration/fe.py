@@ -79,6 +79,7 @@ class fe_run:
             # 2. start with x speed and y rad and keep for s amount of time (more accurate in terms of distance)
             self.msg.linear.x = self.move_info["dist"]
             self.msg.angular.z = self.move_info["rad"]
+            ros_pub.publish(self.msg)
             rate.sleep()
         pass
     
