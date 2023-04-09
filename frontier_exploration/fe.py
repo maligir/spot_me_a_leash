@@ -7,18 +7,18 @@ class fe_run:
         pass
     
     def callback(self, data):
-        file1 = open("map_data.txt","w")
+        # file1 = open("map_data.txt","w")
         # file1.write(str(data))
-        file1.write(str(data.data))
+        # file1.write(str(data.data))
         # convert data to 2d matrix
-        temp = []
-        for i in range(0, data.info.height):
-            temp.append(data.data[i*data.info.width:(i+1)*data.info.width])
+        # temp = []
+        # for i in range(0, data.info.height):
+        #     temp.append(data.data[i*data.info.width:(i+1)*data.info.width])
         cur_x = int(data.info.origin.position.x / data.info.resolution)
         cur_y = int(data.info.origin.position.y / data.info.resolution)
-        if 0 in temp[0] or 100 in temp[0]:
-            rospy.loginfo("I heard %s %s %s", "0 or 100 found", cur_x, cur_y)
-        # rospy.loginfo("I heard %s %s %s", temp, cur_x, cur_y)
+        # if 0 in temp[0] or 100 in temp[0]:
+        #     rospy.loginfo("I heard %s %s %s", "0 or 100 found", cur_x, cur_y)
+        rospy.loginfo("I heard %s %s", cur_x, cur_y)
         pass
     
     def run_prog(self):
