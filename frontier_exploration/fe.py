@@ -49,7 +49,7 @@ class fe_run:
                         continue
                     if cur_y-i < 0:
                         dist = -dist
-                    if cur_y-j == 0:
+                    if cur_y-i == 0:
                         rad = 0
                     else:
                         rad = -np.arctan((j-cur_x) / (cur_y - i))
