@@ -17,6 +17,7 @@ class fe_run:
         self.msg.linear.z = 0.0
         self.closed_list = {"dist": np.array([]), "rad": np.array([])}
         self.prev_map = None
+        self.run_time = 0
     
     def callback(self, data):
         # convert data to 2d matrix
@@ -66,6 +67,7 @@ class fe_run:
         # mutate close list with the dist and rad of the frontier
         self.closed_list["dist"] = self.closed_list["dist"] - self.move_info["dist"]
         self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
+        self.run_time = 180
     
     def run_prog(self):
         ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
@@ -81,7 +83,9 @@ class fe_run:
             self.msg.angular.z = self.move_info["rad"] / 12
             # self.msg.linear.x = 0.5
             # self.msg.angular.z = 0.0
-            ros_pub.publish(self.msg)
+            if self.run_time > 0:
+                self.run_time -= 1
+                ros_pub.publish(self.msg)
             rate.sleep()
         pass
     
