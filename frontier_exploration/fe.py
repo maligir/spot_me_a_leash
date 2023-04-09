@@ -57,7 +57,7 @@ class fe_run:
                         self.open_list["rad"] = np.append(self.open_list["rad"], [rad], axis=0)
         # select the farthest frontier
         max_index = np.argmax(self.open_list["dist"])
-        self.move_info["dist"] = self.open_list["dist"][max_index]
+        self.move_info["dist"] = self.open_list["dist"][max_index]/data.info.width
         self.move_info["rad"] = self.open_list["rad"][max_index]
         rospy.loginfo("Moving from %s %s to %s %s", cur_x, cur_y, self.move_info["dist"], self.move_info["rad"])
         
