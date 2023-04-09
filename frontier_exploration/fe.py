@@ -13,7 +13,7 @@ class fe_run:
         temp = data.data
         # remove all -1s
         temp = [x for x in temp if x != -1]
-        rospy.loginfo("I heard %s", str(len(temp)), str(type(data.data)))
+        rospy.loginfo("I heard %s %s", str(len(temp)), str(type(data.data)))
         pass
     
     def run_prog(self):
