@@ -56,7 +56,7 @@ class fe_run:
                         rad = -np.arctan((j-self.pos_x) / (self.pos_y - i))
                     # check if the frontier is already in the closed list
                     if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"]:
-                        rospy.loginfo("new frontier %s", dist)
+                        # rospy.loginfo("new frontier %s", dist)
                         self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
                         self.open_list["rad"] = np.append(self.open_list["rad"], [rad], axis=0)
                         self.open_list["x"] = np.append(self.open_list["x"], [j], axis=0)
