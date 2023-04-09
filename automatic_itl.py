@@ -69,4 +69,3 @@ class itl_run:
 if __name__ == '__main__':
     app_prog = itl_run()
     app_prog.run_prog()
-        # rospy.init_node('spot_cmd_vel')

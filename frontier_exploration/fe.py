@@ -1,4 +1,29 @@
 # this file is frontier exploration (this runs every time new map is generated)
+import rospy
+from nav_msgs.msg import OccupancyGrid
+
+class fe_run:
+    def __init__(self) -> None:
+        pass
+    
+    def callback(self, data):
+        print(data)
+        print(data.data)
+        rospy.loginfo("I heard %s", data.data)
+        pass
+    
+    def run_prog(self):
+        map_sub = rospy.Subscriber('/map', OccupancyGrid, self.callback)
+        rate = rospy.Rate(60)
+        while not rospy.is_shutdown():
+            rate.sleep()
+        pass
+    
+if __name__ == "__main__":
+    prog = fe_run()
+    prog.run_prog()
+
+
 
 # constantly read in the map
 # done using nav_msgs/OccupancyGrid (subscribe to /map)
