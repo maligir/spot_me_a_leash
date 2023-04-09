@@ -44,15 +44,15 @@ class fe_run:
                 if data.data[i*data.info.width + j] == 0:
                     count += 1
                     # find euclidean distance to robot
-                    dist = ((cur_x - i)**2 + (cur_y - j)**2)**0.5
+                    dist = ((cur_x - j)**2 + (cur_y - i)**2)**0.5
                     if dist == 0:
                         continue
-                    if cur_x-i/cur_y-j < 0:
+                    if cur_y-i < 0:
                         dist = -dist
                     if cur_y-j == 0:
                         rad = 0
                     else:
-                        rad = np.arctan((cur_x - i) / (cur_y - j))
+                        rad = -np.arctan((j-cur_x) / (cur_y - i))
                     # check if the frontier is already in the closed list
                     if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"]:
                         self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
@@ -78,7 +78,7 @@ class fe_run:
             # 1. start with dist speed and keep decreasing speed until 0 (looks like its exploring kinda lmao)
             # 2. start with x speed and y rad and keep for s amount of time (more accurate in terms of distance)
             self.msg.linear.x = self.move_info["dist"] * 8
-            self.msg.angular.z = self.move_info["rad"] / 10
+            self.msg.angular.z = self.move_info["rad"] / 12
             # self.msg.linear.x = 0.5
             # self.msg.angular.z = 0.0
             ros_pub.publish(self.msg)
