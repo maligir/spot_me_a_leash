@@ -12,7 +12,7 @@ class fe_run:
         file1.write(str(data.data))
         temp = data.data
         # remove all -1s
-        temp = [x for x in temp if x != -1]
+        temp = [x for x in temp if x == 100]
         rospy.loginfo("I heard %s %s", str(len(temp)), set(data.data))
         pass
     
