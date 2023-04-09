@@ -37,10 +37,12 @@ class fe_run:
         cur_x = int(data.info.origin.position.x / data.info.resolution)
         cur_y = int(data.info.origin.position.y / data.info.resolution)
         # find all the frontiers relative to the robot
+        count = 0
         for i in range(0, data.info.height):
             for j in range(0, data.info.width):
                 # TODO add more checks here (cell has to border -1)
                 if data.data[i*data.info.width + j] == 0:
+                    count += 1
                     # find euclidean distance to robot
                     dist = ((cur_x - i)**2 + (cur_y - j)**2)**0.5
                     if dist == 0:
@@ -59,7 +61,7 @@ class fe_run:
         max_index = np.argmax(self.open_list["dist"])
         self.move_info["dist"] = self.open_list["dist"][max_index]/data.info.width
         self.move_info["rad"] = self.open_list["rad"][max_index]
-        rospy.loginfo("Moving from %s %s to %s %s", cur_x, cur_y, self.move_info["dist"], self.move_info["rad"])
+        rospy.loginfo("Moving from %s %s to %s %s %s", cur_x, cur_y, self.move_info["dist"], self.move_info["rad"], count)
         
         # mutate close list with the dist and rad of the frontier
         self.closed_list["dist"] = self.closed_list["dist"] - self.move_info["dist"]
