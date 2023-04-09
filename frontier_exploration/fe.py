@@ -22,7 +22,7 @@ class fe_run:
             if 100 in temp[i]:
                 rospy.loginfo("I heard %s %s", "100 found", i)
             break
-        rospy.loginfo("I heard %s %s", cur_x, cur_y)
+        rospy.loginfo("I heard %s %s", 100, cur_y)
         pass
     
     def run_prog(self):
