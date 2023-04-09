@@ -7,9 +7,10 @@ class fe_run:
         pass
     
     def callback(self, data):
-        print(data)
-        print(data.data)
-        rospy.loginfo("I heard %s", data.data)
+        file1 = open("map_data.txt","w")
+        file1.write(data)
+        file1.write(data.data)
+        rospy.loginfo("I heard %s", data)
         pass
     
     def run_prog(self):
