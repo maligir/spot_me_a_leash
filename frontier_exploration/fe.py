@@ -16,6 +16,7 @@ class fe_run:
         self.msg.linear.y = 0.0
         self.msg.linear.z = 0.0
         self.closed_list = {"dist": np.array([]), "rad": np.array([])}
+        self.prev_map = None
     
     def callback(self, data):
         # convert data to 2d matrix
@@ -31,7 +32,6 @@ class fe_run:
         # add 0,0 to close list
         self.closed_list["dist"] = np.append(self.closed_list["dist"], [0], axis=0)
         self.closed_list["rad"] = np.append(self.closed_list["rad"], [0], axis=0)
-        
         
         # get the robots position in the occupancy grid
         cur_x = int(0 - data.info.origin.position.x / data.info.resolution)
@@ -61,8 +61,8 @@ class fe_run:
         max_index = np.argmax(self.open_list["dist"])
         self.move_info["dist"] = self.open_list["dist"][max_index]/data.info.width
         self.move_info["rad"] = self.open_list["rad"][max_index]
-        rospy.loginfo("Moving %s %s", data.info.origin.position.x, data.info.origin.position.y)
-        
+        rospy.loginfo("Moving %s %s %s", type(data.data), type(self.prev_map), self.prev_map == data.data)
+        self.prev_map = data.data
         # mutate close list with the dist and rad of the frontier
         self.closed_list["dist"] = self.closed_list["dist"] - self.move_info["dist"]
         self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
@@ -77,10 +77,10 @@ class fe_run:
             # there are two ways to approach this
             # 1. start with dist speed and keep decreasing speed until 0 (looks like its exploring kinda lmao)
             # 2. start with x speed and y rad and keep for s amount of time (more accurate in terms of distance)
-            # self.msg.linear.x = self.move_info["dist"] * 8
-            # self.msg.angular.z = self.move_info["rad"] / 12
-            self.msg.linear.x = 0.5
-            self.msg.angular.z = 0.0
+            self.msg.linear.x = self.move_info["dist"] * 8
+            self.msg.angular.z = self.move_info["rad"] / 12
+            # self.msg.linear.x = 0.5
+            # self.msg.angular.z = 0.0
             ros_pub.publish(self.msg)
             rate.sleep()
         pass
