@@ -10,7 +10,10 @@ class fe_run:
         file1 = open("map_data.txt","w")
         # file1.write(str(data))
         file1.write(str(data.data))
-        rospy.loginfo("I heard %s", len(data.data))
+        temp = data.data
+        # remove all -1s
+        temp = [x for x in temp if x != -1]
+        rospy.loginfo("I heard %s", len(temp), type(data.data))
         pass
     
     def run_prog(self):
