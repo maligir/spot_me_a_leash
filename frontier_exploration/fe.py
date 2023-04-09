@@ -15,7 +15,7 @@ class fe_run:
         self.msg.linear.x = 0.0
         self.msg.linear.y = 0.0
         self.msg.linear.z = 0.0
-        # self.closed_list = {"dist": [], "rad": []}
+        self.closed_list = {"dist": np.array([]), "rad": np.array([])}
     
     def callback(self, data):
         # convert data to 2d matrix
@@ -25,12 +25,21 @@ class fe_run:
         # 0 means free
         # 100 means occupied
         
+        # clear open list
+        self.open_list["dist"] = []
+        self.open_list["rad"] = []
+        # add 0,0 to close list
+        self.closed_list["dist"] = np.append(self.closed_list["dist"], [[0]], axis=0)
+        self.closed_list["rad"] = np.append(self.closed_list["rad"], [[0]], axis=0)
+        
+        
         # get the robots position in the occupancy grid
         cur_x = int(data.info.origin.position.x / data.info.resolution)
         cur_y = int(data.info.origin.position.y / data.info.resolution)
         # find all the frontiers relative to the robot
         for i in range(0, data.info.height):
             for j in range(0, data.info.width):
+                # TODO add more checks here (cell has to border -1)
                 if data.data[i*data.info.width + j] == 0:
                     # find euclidean distance to robot
                     dist = ((cur_x - i)**2 + (cur_y - j)**2)**0.5
@@ -42,14 +51,19 @@ class fe_run:
                         rad = 0
                     else:
                         rad = np.arctan((cur_x - i) / (cur_y - j))
-                    self.open_list["dist"].append(dist)
-                    self.open_list["rad"].append(rad)
+                    # check if the frontier is already in the closed list
+                    if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"]:
+                        self.open_list["dist"] = np.append(self.open_list["dist"], [[dist]], axis=0)
+                        self.open_list["rad"] = np.append(self.open_list["rad"], [[rad]], axis=0)
         # select the farthest frontier
-        max_index = self.open_list["dist"].index(max(self.open_list["dist"]))
+        max_index = np.argmax(self.open_list["dist"])
         self.move_info["dist"] = self.open_list["dist"][max_index]
         self.move_info["rad"] = self.open_list["rad"][max_index]
-        # rospy.loginfo("I heard %s %s", 100, cur_y)
-        pass
+        rospy.loginfo("Moving from %s %s to %s %s", cur_x, cur_y, self.move_info["dist"], self.move_info["rad"])
+        
+        # mutate close list with the dist and rad of the frontier
+        self.closed_list["dist"] = self.closed_list["dist"] - self.move_info["dist"]
+        self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
     
     def run_prog(self):
         ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
@@ -57,7 +71,7 @@ class fe_run:
         rospy.init_node('map_sub', anonymous=True)
         rate = rospy.Rate(60)
         while not rospy.is_shutdown():
-            # figure out moving calculations (should be trial and error)
+            # TODO figure out moving calculations (should be trial and error)
             # there are two ways to approach this
             # 1. start with dist speed and keep decreasing speed until 0 (looks like its exploring kinda lmao)
             # 2. start with x speed and y rad and keep for s amount of time (more accurate in terms of distance)
