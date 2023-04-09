@@ -14,9 +14,10 @@ class fe_run:
     
     def run_prog(self):
         map_sub = rospy.Subscriber('/map', OccupancyGrid, self.callback)
-        # rate = rospy.Rate(60)
-        # while not rospy.is_shutdown():
-        #     rate.sleep()
+        rospy.init_node('itl_keyboard_sub', anonymous=True)
+        rate = rospy.Rate(60)
+        while not rospy.is_shutdown():
+            rate.sleep()
         pass
     
 if __name__ == "__main__":
