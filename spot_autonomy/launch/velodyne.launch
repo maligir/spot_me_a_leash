@@ -59,10 +59,10 @@
       args="0 0 0.85 0 0 0 1 base_link velodyne 20" />
 
 <!-- Publish gpe to base_link tf -->
-  <node pkg="tf"
+  <!-- <node pkg="tf"
       type="static_transform_publisher"
       name="velodyne_tf_broadcaster_base"
-      args="0 0 0 0 0 3.14 1 gpe base_link 20" />
+      args="0 0 0 0 0 3.14 1 gpe base_link 20" /> -->
 
   <node pkg="spot_autonomy"
       type="pointcloud_to_laserscan"
