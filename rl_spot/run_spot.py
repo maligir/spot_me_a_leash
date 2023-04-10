@@ -13,19 +13,10 @@ if __name__ == '__main__':
             print(i)
 
         while not maze.is_game_over():
-            state, _ = maze.get_state_and_reward() # get the current state
-            action = robot.choose_action(state, maze.allowed_states[state]) # choose an action (explore or exploit)
-            if i == 4999:
-                maze.print_maze()
-            maze.update_maze(action) # update the maze according to the action
-            state, reward = maze.get_state_and_reward() # get the new state and reward
-            robot.update_state_history(state, reward) # update the robot memory with state and reward
-            if maze.steps > 1000:
-                # end the robot if it takes too long to find the goal
-                maze.robot_position = (5, 5)
+            fe_state, _ = maze.get_state_and_reward() # get the current state
+            action = robot.choose_action(fe_state) # choose an action (explore or exploit)
+            fe_state, reward = maze.get_state_and_reward() # get the new state and reward
+            robot.update_state_history(fe_state, reward) # update the robot memory with state and reward
         
         robot.learn() # robot should learn after every episode
-        moveHistory.append(maze.steps) # get a history of number of steps taken to plot later
         maze = Maze() # reinitialize the maze
-plt.semilogy(moveHistory, "b--")
-plt.show()

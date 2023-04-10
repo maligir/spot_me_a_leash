@@ -16,6 +16,7 @@ class fe_run:
         self.msg.linear.z = 0.0
         self.closed_list = {"dist": np.array([]), "rad": np.array([])}
         self.prev_map = None
+        self.cur_map = None
         self.run_time = 0
         self.pos_x = 1999
         self.pos_y = 1999
@@ -28,6 +29,8 @@ class fe_run:
         # -1 means unknown
         # 0 means free
         # 100 means occupied
+        
+        self.prev_map = self.cur_map
         
         # clear open list
         self.open_list["dist"] = []
@@ -58,6 +61,7 @@ class fe_run:
                     if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"] and dist < 300:
                         # rospy.loginfo("new frontier %s", dist)
                         self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
+                        # TODO change rad so that is aligns with one of the 12 directions
                         self.open_list["rad"] = np.append(self.open_list["rad"], [rad], axis=0)
                         self.open_list["x"] = np.append(self.open_list["x"], [j], axis=0)
                         self.open_list["y"] = np.append(self.open_list["y"], [i], axis=0)
@@ -68,7 +72,7 @@ class fe_run:
         self.pos_x = self.open_list["x"][max_index]
         self.pos_y = self.open_list["y"][max_index]
         rospy.loginfo("Moving %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index])
-        self.prev_map = data.data
+        self.cur_map = data.data
         # mutate close list with the dist and rad of the frontier
         self.closed_list["dist"] = self.closed_list["dist"] - self.move_info["dist"]
         self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
@@ -81,6 +85,7 @@ class fe_run:
         rate = rospy.Rate(60)
         while not rospy.is_shutdown():
             # TODO figure out moving calculations (should be trial and error)
+            # TODO for moving we need to move SPOT a certain amount of radians and then move forward/backward in that direction
             # there are two ways to approach this
             # 1. start with dist speed and keep decreasing speed until 0 (looks like its exploring kinda lmao)
             # 2. start with x speed and y rad and keep for s amount of time (more accurate in terms of distance)
