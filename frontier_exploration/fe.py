@@ -17,7 +17,8 @@ class fe_run:
         self.closed_list = {"dist": np.array([]), "rad": np.array([])}
         self.prev_map = None
         self.cur_map = None
-        self.run_time = 0
+        self.turn_time = 0
+        self.move_time = 180
         self.pos_x = 1999
         self.pos_y = 1999
         self.pos_rad = 0
@@ -60,11 +61,10 @@ class fe_run:
                     if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"] and dist < 300:
                         # rospy.loginfo("new frontier %s", dist)
                         self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
-                        # TODO change rad so that is aligns with one of the 12 directions
                         rad = int(rad/0.523599)
                         if rad < 0:
                             rad = rad + 12
-                        if self.pos_x-i < 0:
+                        if self.pos_y-i < 0:
                             rad = (rad + 6) % 12
                         self.open_list["rad"] = np.append(self.open_list["rad"], [rad], axis=0)
                         self.open_list["x"] = np.append(self.open_list["x"], [j], axis=0)
@@ -82,41 +82,33 @@ class fe_run:
         # mutate close list with the dist and rad of the frontier
         self.closed_list["dist"] = self.closed_list["dist"] - self.move_info["dist"]
         self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
-        self.run_time = 180
-    
+        if self.move_info["dist"] < 7:
+            self.turn_time = 60 * self.move_info["rad"]
+        else:
+            self.turn_time = 60 * abs(self.move_info["rad"] - 12)
     def run_prog(self):
         ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
         map_sub = rospy.Subscriber('/map', OccupancyGrid, self.callback)
         rospy.init_node('map_sub', anonymous=True)
         rate = rospy.Rate(60)
         while not rospy.is_shutdown():
-            # TODO figure out moving calculations (should be trial and error)
-            # TODO for moving we need to move SPOT a certain amount of radians and then move forward/backward in that direction
             # there are two ways to approach this
             # 1. start with dist speed and keep decreasing speed until 0 (looks like its exploring kinda lmao)
             # 2. start with x speed and y rad and keep for s amount of time (more accurate in terms of distance)
-            # self.msg.linear.x = self.move_info["dist"] * 8
             
-            if self.msg.linear.x == 0:
-                if self.move_info["rad"] < 6:
-                    # positive - move left
-                    self.msg.angular.z = self.move_info["rad"] * 0.523599
+            
+            self.msg.linear.x = 0
+            self.msg.angular.z = 0
+            if self.turn_time > 0:
+                if self.move_info["rad"] < 7:
+                    self.msg.angular.z = 0.2
                 else:
-                    # negative - move right
-                    self.msg.angular.z = self.move_info["rad"]-12 * 0.523599
-                
-            # if self.msg.angular.z == 0:
-            #     self.msg.linear.x = 0.2
-            # self.msg.linear.x = 0.5
-            # self.msg.angular.z = 0.0
-            if self.run_time > 0:
-                self.run_time -= 1
-                ros_pub.publish(self.msg)
-                self.msg.angular.z = 0.0
-                self.msg.linear.x = 0.2
-            if self.run_time == 0:
-                self.msg.angular.z = 0.0
-                self.msg.linear.x = 0.0
+                    self.msg.angular.z = -0.2
+                self.turn_time -= 1
+            elif self.move_time > 0:
+                self.msg.linear.x = 0.3
+                self.move_time -= 1
+            ros_pub.publish(self.msg)
             rate.sleep()
         pass
     
