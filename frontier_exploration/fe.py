@@ -20,6 +20,7 @@ class fe_run:
         self.run_time = 0
         self.pos_x = 1999
         self.pos_y = 1999
+        self.pos_rad = 0
         self.move_info = {"dist": 0, "rad": 0}
     
     def callback(self, data):
@@ -51,8 +52,6 @@ class fe_run:
                     dist = ((self.pos_x - j)**2 + (self.pos_y - i)**2)**0.5
                     if dist == 0:
                         continue
-                    if self.pos_x-i < 0:
-                        dist = -dist
                     if self.pos_y-i == 0:
                         rad = 0
                     else:
@@ -62,13 +61,20 @@ class fe_run:
                         # rospy.loginfo("new frontier %s", dist)
                         self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
                         # TODO change rad so that is aligns with one of the 12 directions
+                        rad = int(rad/0.523599)
+                        if rad < 0:
+                            rad = rad + 12
+                        if self.pos_x-i < 0:
+                            rad = (rad + 6) % 12
                         self.open_list["rad"] = np.append(self.open_list["rad"], [rad], axis=0)
                         self.open_list["x"] = np.append(self.open_list["x"], [j], axis=0)
                         self.open_list["y"] = np.append(self.open_list["y"], [i], axis=0)
         # select the farthest frontier
         max_index = np.argmax(self.open_list["dist"])
         self.move_info["dist"] = self.open_list["dist"][max_index]/data.info.width
-        self.move_info["rad"] = self.open_list["rad"][max_index]
+        # movement is relative to spots orientation
+        self.move_info["rad"] = self.open_list["rad"][max_index] - self.pos_rad
+        self.pos_rad = self.open_list["rad"][max_index]
         self.pos_x = self.open_list["x"][max_index]
         self.pos_y = self.open_list["y"][max_index]
         rospy.loginfo("Moving %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index])
@@ -89,13 +95,28 @@ class fe_run:
             # there are two ways to approach this
             # 1. start with dist speed and keep decreasing speed until 0 (looks like its exploring kinda lmao)
             # 2. start with x speed and y rad and keep for s amount of time (more accurate in terms of distance)
-            self.msg.linear.x = self.move_info["dist"] * 8
-            self.msg.angular.z = self.move_info["rad"] / 12
+            # self.msg.linear.x = self.move_info["dist"] * 8
+            
+            if self.msg.linear.x == 0:
+                if self.move_info["rad"] < 6:
+                    # positive - move left
+                    self.msg.angular.z = self.move_info["rad"] * 0.523599
+                else:
+                    # negative - move right
+                    self.msg.angular.z = self.move_info["rad"]-12 * 0.523599
+                
+            # if self.msg.angular.z == 0:
+            #     self.msg.linear.x = 0.2
             # self.msg.linear.x = 0.5
             # self.msg.angular.z = 0.0
             if self.run_time > 0:
                 self.run_time -= 1
                 ros_pub.publish(self.msg)
+                self.msg.angular.z = 0.0
+                self.msg.linear.x = 0.2
+            if self.run_time == 0:
+                self.msg.angular.z = 0.0
+                self.msg.linear.x = 0.0
             rate.sleep()
         pass
     
