@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     maze = Maze()
-    robot = Agent(maze.maze, alpha=0.1, random_factor=0.25)
+    robot = Agent(alpha=0.1, random_factor=0.25)
     moveHistory = []
 
     for i in range(5000):
