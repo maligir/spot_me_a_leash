@@ -35,7 +35,7 @@ class fe_run:
         # 0 means free
         # 100 means occupied
         rospy.loginfo("move time: " + str(self.move_time) + " turn time: " + str(self.turn_time))
-        if self.move_time < 80 and self.turn_time < 1:
+        if self.move_time < 100 and self.turn_time < 1:
             self.prev_map = self.cur_map
             
             # clear open list
