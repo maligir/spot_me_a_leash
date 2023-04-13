@@ -34,61 +34,59 @@ class fe_run:
         # -1 means unknown
         # 0 means free
         # 100 means occupied
-        rospy.loginfo("move time: " + str(self.move_time) + " turn time: " + str(self.turn_time))
-        if self.move_time < 100 and self.turn_time < 1:
-            self.prev_map = self.cur_map
-            
-            # clear open list
-            self.open_list["dist"] = []
-            self.open_list["rad"] = []
-            # add 0,0 to close list
-            self.closed_list["dist"] = np.append(self.closed_list["dist"], [0], axis=0)
-            self.closed_list["rad"] = np.append(self.closed_list["rad"], [0], axis=0)
-            
-            # get the robots position in the occupancy grid
-            # cur_x = int(0 - data.info.origin.position.x / data.info.resolution)
-            # cur_y = int(0 - data.info.origin.position.y / data.info.resolution)
-            # find all the frontiers relative to the robot
-            for i in range(0, data.info.height):
-                for j in range(0, data.info.width):
-                    # TODO add more checks here (cell has to border -1)
-                    if data.data[i*data.info.width + j] == 0:
-                        # find euclidean distance to robot
-                        dist = ((self.pos_x - j)**2 + (self.pos_y - i)**2)**0.5
-                        if dist == 0:
-                            continue
-                        if self.pos_y-i == 0:
-                            rad = 0
-                        else:
-                            rad = -np.arctan((j-self.pos_x) / (self.pos_y - i))
-                        # check if the frontier is already in the closed list
-                        if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"] and dist < 500:
-                            # rospy.loginfo("new frontier %s", dist)
-                            self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
-                            rad = int(rad * 6/np.pi)
-                            if rad < 0:
-                                rad = rad + 12
-                            if self.pos_y-i < 0:
-                                rad = (rad + 6) % 12
-                            self.open_list["rad"] = np.append(self.open_list["rad"], [rad], axis=0)
-                            self.open_list["x"] = np.append(self.open_list["x"], [j], axis=0)
-                            self.open_list["y"] = np.append(self.open_list["y"], [i], axis=0)
-            # select the farthest frontier
-            max_index = np.argmax(self.open_list["dist"])
-            self.move_info["dist"] = self.open_list["dist"][max_index]
-            # movement is relative to spots orientation
-            self.move_info["rad"] = self.open_list["rad"][max_index] - self.pos_rad
-            self.pos_rad = self.open_list["rad"][max_index]
-            rospy.loginfo("Moving %s %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index], "x and y")
-            self.cur_map = data.data
-            # mutate close list with the dist and rad of the frontier
-            self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
-            # TODO change 60 to a reasonable time
-            if self.move_info["rad"] < 7:
-                self.turn_time = 25 * self.move_info["rad"]
-            else:
-                self.turn_time = 25 * abs(self.move_info["rad"] - 12)
-            self.move_time = 180
+        self.prev_map = self.cur_map
+        
+        # clear open list
+        self.open_list["dist"] = []
+        self.open_list["rad"] = []
+        # add 0,0 to close list
+        self.closed_list["dist"] = np.append(self.closed_list["dist"], [0], axis=0)
+        self.closed_list["rad"] = np.append(self.closed_list["rad"], [0], axis=0)
+        
+        # get the robots position in the occupancy grid
+        # cur_x = int(0 - data.info.origin.position.x / data.info.resolution)
+        # cur_y = int(0 - data.info.origin.position.y / data.info.resolution)
+        # find all the frontiers relative to the robot
+        for i in range(0, data.info.height):
+            for j in range(0, data.info.width):
+                # TODO add more checks here (cell has to border -1)
+                if data.data[i*data.info.width + j] == 0:
+                    # find euclidean distance to robot
+                    dist = ((self.pos_x - j)**2 + (self.pos_y - i)**2)**0.5
+                    if dist == 0:
+                        continue
+                    if self.pos_y-i == 0:
+                        rad = 0
+                    else:
+                        rad = -np.arctan((j-self.pos_x) / (self.pos_y - i))
+                    # check if the frontier is already in the closed list
+                    if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"] and dist < 500:
+                        # rospy.loginfo("new frontier %s", dist)
+                        self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
+                        rad = int(rad * 6/np.pi)
+                        if rad < 0:
+                            rad = rad + 12
+                        if self.pos_y-i < 0:
+                            rad = (rad + 6) % 12
+                        self.open_list["rad"] = np.append(self.open_list["rad"], [rad], axis=0)
+                        self.open_list["x"] = np.append(self.open_list["x"], [j], axis=0)
+                        self.open_list["y"] = np.append(self.open_list["y"], [i], axis=0)
+        # select the farthest frontier
+        max_index = np.argmax(self.open_list["dist"])
+        self.move_info["dist"] = self.open_list["dist"][max_index]
+        # movement is relative to spots orientation
+        self.move_info["rad"] = self.open_list["rad"][max_index] - self.pos_rad
+        self.pos_rad = self.open_list["rad"][max_index]
+        rospy.loginfo("Moving %s %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index], "x and y")
+        self.cur_map = data.data
+        # mutate close list with the dist and rad of the frontier
+        self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
+        # TODO change 60 to a reasonable time
+        if self.move_info["rad"] < 7:
+            self.turn_time = 25 * self.move_info["rad"]
+        else:
+            self.turn_time = 25 * abs(self.move_info["rad"] - 12)
+        self.move_time = 180
         
     def odom_callback(self, data):
         self.pos_x = int(data.pose.pose.position.x - self.map_x / self.resolution)
