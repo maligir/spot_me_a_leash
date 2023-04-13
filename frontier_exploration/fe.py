@@ -105,9 +105,9 @@ class fe_run:
             self.msg.angular.z = 0
             if self.turn_time > 0:
                 if self.move_info["rad"] < 7:
-                    self.msg.angular.z = 1.3
+                    self.msg.angular.z = 1.15
                 else:
-                    self.msg.angular.z = 1.3
+                    self.msg.angular.z = -1.15
                 self.turn_time -= 1
             elif self.move_time > 0:
                 self.msg.linear.x = 0.6
