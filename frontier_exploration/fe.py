@@ -25,6 +25,7 @@ class fe_run:
         self.resolution = 0.05
         self.map_x = -100
         self.map_y = -100
+        self.cur_data = None
         self.move_info = {"dist": 0, "rad": 0}
     
     def callback(self, data):
@@ -34,7 +35,8 @@ class fe_run:
         # -1 means unknown
         # 0 means free
         # 100 means occupied
-        if self.turn_time < 1:
+        self.cur_data = data
+        if self.turn_time < 1 and data != None:
             self.prev_map = self.cur_map
             
             # clear open list
@@ -119,6 +121,8 @@ class fe_run:
                 self.msg.linear.x = 0.6
                 self.move_time -= 1
             ros_pub.publish(self.msg)
+            if self.move_time == 0 and self.turn_time == 0:
+                self.callback(self.cur_data)
             rate.sleep()
         pass
     
