@@ -27,6 +27,7 @@ class fe_run:
         self.map_y = -100
         self.cur_data = None
         self.move_info = {"dist": 0, "rad": 0}
+        self.callback_running = False
     
     def callback(self, data):
         # convert data to 2d matrix
@@ -36,7 +37,8 @@ class fe_run:
         # 0 means free
         # 100 means occupied
         self.cur_data = data
-        if self.turn_time < 1 and data != None:
+        if self.turn_time < 1 and data != None and not self.callback_running:
+            self.callback_running = True
             self.prev_map = self.cur_map
             
             # clear open list
@@ -90,6 +92,7 @@ class fe_run:
             else:
                 self.turn_time = 28 * abs(self.move_info["rad"] - 12)
             self.move_time = 180
+            self.callback_running = False
         
     def odom_callback(self, data):
         self.pos_x = int(data.pose.pose.position.x - self.map_x / self.resolution)
