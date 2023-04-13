@@ -34,7 +34,7 @@ class fe_run:
         # -1 means unknown
         # 0 means free
         # 100 means occupied
-        if self.turn_time < np.inf:
+        if self.turn_time < 1:
             self.prev_map = self.cur_map
             
             # clear open list
