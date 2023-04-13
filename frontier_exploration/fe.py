@@ -84,9 +84,9 @@ class fe_run:
         self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
         # TODO change 60 to a reasonable time
         if self.move_info["rad"] < 7:
-            self.turn_time = 30 * self.move_info["rad"]
+            self.turn_time = 25 * self.move_info["rad"]
         else:
-            self.turn_time = 30 * abs(self.move_info["rad"] - 12)
+            self.turn_time = 25 * abs(self.move_info["rad"] - 12)
         self.move_time = 180
         
         
