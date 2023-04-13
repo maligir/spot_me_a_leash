@@ -1,7 +1,7 @@
 # this file is frontier exploration (this runs every time new map is generated)
 import rospy
 import numpy as np
-from nav_msgs.msg import OccupancyGrid
+from nav_msgs.msg import OccupancyGrid, Odometry
 from geometry_msgs.msg import Twist
 
 class fe_run:
@@ -22,6 +22,9 @@ class fe_run:
         self.pos_x = 1999
         self.pos_y = 1999
         self.pos_rad = 0
+        self.resolution = 0.05
+        self.map_x = -100
+        self.map_y = -100
         self.move_info = {"dist": 0, "rad": 0}
     
     def callback(self, data):
@@ -61,7 +64,7 @@ class fe_run:
                     if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"] and dist < np.inf:
                         # rospy.loginfo("new frontier %s", dist)
                         self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
-                        rad = int(rad/0.523599)
+                        rad = int(rad * 6/np.pi)
                         if rad < 0:
                             rad = rad + 12
                         if self.pos_y-i < 0:
@@ -71,16 +74,13 @@ class fe_run:
                         self.open_list["y"] = np.append(self.open_list["y"], [i], axis=0)
         # select the farthest frontier
         max_index = np.argmax(self.open_list["dist"])
-        self.move_info["dist"] = self.open_list["dist"][max_index]/data.info.width
+        self.move_info["dist"] = self.open_list["dist"][max_index]
         # movement is relative to spots orientation
-        self.move_info["rad"] = self.open_list["rad"][max_index]
+        self.move_info["rad"] = self.open_list["rad"][max_index] - self.pos_rad
         self.pos_rad = self.open_list["rad"][max_index]
-        self.pos_x = self.open_list["x"][max_index]
-        self.pos_y = self.open_list["y"][max_index]
-        rospy.loginfo("Moving %s %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index], self.move_info["dist"])
+        rospy.loginfo("Moving %s %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index], "x and y")
         self.cur_map = data.data
         # mutate close list with the dist and rad of the frontier
-        self.closed_list["dist"] = self.closed_list["dist"] - self.move_info["dist"]
         self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
         # TODO change 60 to a reasonable time
         if self.move_info["rad"] < 7:
@@ -89,10 +89,16 @@ class fe_run:
             self.turn_time = 25 * abs(self.move_info["rad"] - 12)
         self.move_time = 180
         
+    def odom_callback(self, data):
+        self.pos_x = int(data.pose.pose.position.x - self.map_x / self.resolution)
+        self.pos_y = int(data.pose.pose.position.y - self.map_y / self.resolution)
+        self.pos_rad = int(data.pose.pose.orientation.z * 6/np.pi)
+        pass
         
     def run_prog(self):
         ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
         map_sub = rospy.Subscriber('/map', OccupancyGrid, self.callback)
+        odom_sub = rospy.Subscriber('/odom', Odometry, self.odom_callback)
         rospy.init_node('map_sub', anonymous=True)
         rate = rospy.Rate(60)
         while not rospy.is_shutdown():
