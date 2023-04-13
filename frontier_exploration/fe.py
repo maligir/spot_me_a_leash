@@ -58,7 +58,7 @@ class fe_run:
                     else:
                         rad = -np.arctan((j-self.pos_x) / (self.pos_y - i))
                     # check if the frontier is already in the closed list
-                    if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"] and dist < 600:
+                    if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"] and dist < np.inf:
                         # rospy.loginfo("new frontier %s", dist)
                         self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
                         rad = int(rad/0.523599)
@@ -73,11 +73,11 @@ class fe_run:
         max_index = np.argmax(self.open_list["dist"])
         self.move_info["dist"] = self.open_list["dist"][max_index]/data.info.width
         # movement is relative to spots orientation
-        self.move_info["rad"] = self.open_list["rad"][max_index] - self.pos_rad
+        self.move_info["rad"] = self.open_list["rad"][max_index]
         self.pos_rad = self.open_list["rad"][max_index]
         self.pos_x = self.open_list["x"][max_index]
         self.pos_y = self.open_list["y"][max_index]
-        rospy.loginfo("Moving %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index])
+        rospy.loginfo("Moving %s %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index], self.move_info["dist"])
         self.cur_map = data.data
         # mutate close list with the dist and rad of the frontier
         self.closed_list["dist"] = self.closed_list["dist"] - self.move_info["dist"]
