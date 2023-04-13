@@ -78,15 +78,15 @@ class fe_run:
             # movement is relative to spots orientation
             self.move_info["rad"] = self.open_list["rad"][max_index]
             self.pos_rad = self.open_list["rad"][max_index]
-            rospy.loginfo("Moving %s %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index], "x and y")
+            rospy.loginfo("Moving %s %s %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index], self.pos_x, self.pos_y)
             self.cur_map = data.data
             # mutate close list with the dist and rad of the frontier
             self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
             # TODO change 60 to a reasonable time
             if self.move_info["rad"] < 7:
-                self.turn_time = 25 * self.move_info["rad"]
+                self.turn_time = 28 * self.move_info["rad"]
             else:
-                self.turn_time = 25 * abs(self.move_info["rad"] - 12)
+                self.turn_time = 28 * abs(self.move_info["rad"] - 12)
             self.move_time = 180
         
     def odom_callback(self, data):
