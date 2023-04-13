@@ -58,7 +58,7 @@ class fe_run:
                     else:
                         rad = -np.arctan((j-self.pos_x) / (self.pos_y - i))
                     # check if the frontier is already in the closed list
-                    if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"] and dist < 300:
+                    if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"] and dist < 600:
                         # rospy.loginfo("new frontier %s", dist)
                         self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
                         rad = int(rad/0.523599)
@@ -105,12 +105,12 @@ class fe_run:
             self.msg.angular.z = 0
             if self.turn_time > 0:
                 if self.move_info["rad"] < 7:
-                    self.msg.angular.z = 0.8
+                    self.msg.angular.z = 1
                 else:
-                    self.msg.angular.z = -0.8
+                    self.msg.angular.z = 1
                 self.turn_time -= 1
             elif self.move_time > 0:
-                self.msg.linear.x = 0.3
+                self.msg.linear.x = 0.6
                 self.move_time -= 1
             ros_pub.publish(self.msg)
             rate.sleep()
