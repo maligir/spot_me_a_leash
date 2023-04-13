@@ -33,9 +33,12 @@ class Agent(object):
             next_move = {"dist": .5, "rad": max(self.G, key=self.G.get)}
         
         fe_state.move_info = next_move
-        # TODO calculate time to move
-        fe_state.turn_time = 0
-        fe_state.move_time = 0
+        # TODO change 60 to a reasonable time
+        if fe_state.move_info["rad"] < 7:
+            fe_state.turn_time = 60 * self.move_info["rad"]
+        else:
+            fe_state.turn_time = 60 * abs(self.move_info["rad"] - 12)
+        fe_state.move_time = 180
         
         return next_move
 

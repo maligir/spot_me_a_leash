@@ -82,10 +82,14 @@ class fe_run:
         # mutate close list with the dist and rad of the frontier
         self.closed_list["dist"] = self.closed_list["dist"] - self.move_info["dist"]
         self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
-        if self.move_info["dist"] < 7:
+        # TODO change 60 to a reasonable time
+        if self.move_info["rad"] < 7:
             self.turn_time = 60 * self.move_info["rad"]
         else:
             self.turn_time = 60 * abs(self.move_info["rad"] - 12)
+        self.move_time = 180
+        
+        
     def run_prog(self):
         ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
         map_sub = rospy.Subscriber('/map', OccupancyGrid, self.callback)
