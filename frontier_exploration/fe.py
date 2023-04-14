@@ -88,11 +88,12 @@ class fe_run:
             else:
                 self.turn_time = 28 * abs(self.move_info["rad"] - 12)
             self.move_time = 180
+            rospy.loginfo("Moving \ndist:%s rad:%s \ngoal_x:%s \ngoal_y:%s \npos_x:%s pos_y:%s", self.move_info["dist"], self.move_info["rad"], self.open_list['x'][max_index], self.open_list['y'][max_index], self.pos_x, self.pos_y)
         else:
             self.move_info["rad"] = 0
             # max_index = np.argmax(self.open_list["dist"])
             # self.move_info["dist"] = ((self.pos_x - self.open_list["x"][max_index])**2 + (self.pos_y - self.open_list["y"][max_index])**2)**0.5
-        rospy.loginfo("Moving \ndist:%s rad:%s \npos_x:%s pos_y:%s", self.move_info["dist"], self.move_info["rad"], self.pos_x, self.pos_y)
+            rospy.loginfo("Moving \ndist:%s rad:%s \npos_x:%s pos_y:%s", self.move_info["dist"], self.move_info["rad"], self.pos_x, self.pos_y)
         self.cur_map = data.data
         
     def odom_callback(self, data):
