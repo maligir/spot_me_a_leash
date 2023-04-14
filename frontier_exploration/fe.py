@@ -51,7 +51,7 @@ class fe_run:
             for i in range(0, data.info.height):
                 for j in range(0, data.info.width):
                     # TODO add more checks here (cell has to border -1)
-                    if self.check_adj(data.data, j, i):
+                    if data.data[i*data.info.width + j] == 0 and self.check_adj(data.data, j, i):
                         # find euclidean distance to robot
                         dist = ((self.pos_x - j)**2 + (self.pos_y - i)**2)**0.5
                         if dist == 0:
