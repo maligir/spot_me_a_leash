@@ -79,7 +79,7 @@ class fe_run:
             #     return
             self.move_info["dist"] = self.open_list["dist"][max_index]
             # movement is relative to spots orientation
-            self.move_info["rad"] = self.open_list["rad"][max_index]
+            self.move_info["rad"] = self.open_list["rad"][max_index] - self.pos_rad
             self.pos_rad = self.open_list["rad"][max_index]
             # mutate close list with the dist and rad of the frontier
             # self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
