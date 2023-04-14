@@ -99,7 +99,7 @@ class fe_run:
     def odom_callback(self, data):
         self.pos_x = int(data.pose.pose.position.x - self.map_x / self.resolution)
         self.pos_y = int(data.pose.pose.position.y - self.map_y / self.resolution)
-        self.pos_rad = int(data.pose.pose.orientation.z * 6/np.pi)
+        # self.pos_rad = int(data.pose.pose.orientation.z * 6/np.pi)
         pass
         
     def run_prog(self):
