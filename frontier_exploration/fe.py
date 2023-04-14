@@ -73,7 +73,7 @@ class fe_run:
                             self.open_list["x"] = np.append(self.open_list["x"], [j], axis=0)
                             self.open_list["y"] = np.append(self.open_list["y"], [i], axis=0)
             # select the farthest frontier
-            max_index = np.argmax(self.open_list["dist"])
+            max_index = np.argmin(self.open_list["dist"])
             # if self.move_info["dist"] - self.open_list["dist"][max_index] < 0.5:
             #     self.move_info["rad"] = 0
             #     return
