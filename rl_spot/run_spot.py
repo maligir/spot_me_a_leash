@@ -1,6 +1,6 @@
 import numpy as np
-from rl_env_sim import Maze
-from rl_agent_sim import Agent
+from rl_env_spot import Maze
+from rl_agent_spot import Agent
 if __name__ == '__main__':
     maze = Maze()
     robot = Agent(alpha=0.1, random_factor=0.2)
