@@ -34,28 +34,47 @@ export ROS_MASTER_URI=http://10.0.0.131:11311
 export ROS_IP=10.0.0.131
 ssh amrl-user@10.0.0.131
 docker exec -it ros-docker_app_1 bash
-sudo apt update
-sudo apt install ros-noetic-gmapping
-source /opt/ros/noetic/setup.bash
-rosrun gmapping slam_gmapping scan:=scan odom_frame:=odom
+rosrun tf static_transform_publisher 0 0 0 0 0 insert_z_angle_transform 1 gpe base_link 20
 
 Terminal 5
 
 export ROS_MASTER_URI=http://10.0.0.131:11311
 export ROS_IP=10.0.0.131
-rosrun rviz rviz
+ssh amrl-user@10.0.0.131
+docker exec -it ros-docker_app_1 bash
+rosrun gmapping slam_gmapping scan:=scan
 
 Terminal 6
 
 export ROS_MASTER_URI=http://10.0.0.131:11311
 export ROS_IP=10.0.0.131
+rosrun rviz rviz
+
+Terminal 7
+
+export ROS_MASTER_URI=http://10.0.0.131:11311
+export ROS_IP=10.0.0.131
 ssh amrl-user@10.0.0.131
-cd spot_rahul_anushka/spot_me_a_leash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
 docker exec -it ros-docker_app_1 bash
-cd spot_rahul_anushka/spot_me_a_leash
-source venv/bin/activate
-cd rl_spot
-python run_sim.py
+cd spot_rahul_anushka/spot_me_a_leash/rl_spot
+python run_spot.py
+
+# Control Spot
+
+Terminal 8
+
+export ROS_MASTER_URI=http://10.0.0.131:11311
+export ROS_IP=10.0.0.131
+ssh amrl-user@10.0.0.131
+docker exec -it ros-docker_app_1 bash
+cd spot_rahul_anushka/spot_me_a_leash/
+python keyboard_itl.py
+
+Terminal 9
+
+export ROS_MASTER_URI=http://10.0.0.131:11311
+export ROS_IP=10.0.0.131
+ssh amrl-user@10.0.0.131
+docker exec -it ros-docker_app_1 bash
+cd spot_rahul_anushka/spot_me_a_leash/
+python automatic_itl.py
