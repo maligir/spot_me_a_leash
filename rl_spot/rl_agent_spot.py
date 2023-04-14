@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 
 # ACTIONS = {'U': (-1, 0), 'D': (1, 0), 'L': (0, -1), 'R': (0, 1)}
 # ACTIONS = publish to cmd vel one direction (up, down, left, right)
@@ -59,3 +60,19 @@ class Agent(object):
 
         self.randomFactor -= 0.01 # decrease random factor each episode of play
         # TODO chang random factor based on how fast we want it to learn
+    
+    def save(self):
+        with open("g.pickle", "wb") as g:
+            pickle.dump(self.G, g)
+        with open("random.pickle", "wb") as rando:
+            pickle.dump(self.randomFactor, rando)
+        with open("state_history.pickle", "wb") as sh:
+            pickle.dump(self.state_history, sh)
+    
+    def load(self):
+        with open("g.pickle", "rb") as g:
+            self.G = pickle.load(g)
+        with open("random.pickle", "rb") as rando:
+            self.randomFactor = pickle.load(rando)
+        with open("state_history.pickle", "rb") as sh:
+            self.state_history = pickle.load(sh)
