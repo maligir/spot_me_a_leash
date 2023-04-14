@@ -121,7 +121,7 @@ class fe_run:
                     self.msg.angular.z = -1.15
                 self.turn_time -= 1
             else: # TODO see if this changed anything
-                self.msg.linear.x = 0.6
+                self.msg.linear.x = 0.4
                 self.move_time -= 1
             ros_pub.publish(self.msg)
             rate.sleep()
