@@ -14,7 +14,7 @@ class Maze(object):
 
     def is_game_over(self):
         # check if robot in the final position
-        if time() - self.start_time > 30:
+        if time.time() - self.start_time > 30:
             return True
         else:
             return False
