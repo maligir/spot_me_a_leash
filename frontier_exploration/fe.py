@@ -51,7 +51,7 @@ class fe_run:
             for i in range(0, data.info.height):
                 for j in range(0, data.info.width):
                     # TODO add more checks here (cell has to border -1)
-                    if data.data[i*data.info.width + j] == 0:
+                    if self.check_adj(data, j, i):
                         # find euclidean distance to robot
                         dist = ((self.pos_x - j)**2 + (self.pos_y - i)**2)**0.5
                         if dist == 0:
@@ -127,6 +127,33 @@ class fe_run:
             ros_pub.publish(self.msg)
             rate.sleep()
         pass
+
+    def check_adj(self, grid_map, x, y):
+        # x and y must be less than 4000
+        y_idx = y*4000
+        if x-1 >= 0 and grid_map[y_idx+x-1] == -1:
+            return True
+        if x+1 < 4000 and grid_map[y_idx+x+1] == -1:
+            return True
+
+        prev_y = y_idx - 4000
+        if prev_y >= 0:
+            if x-1 >= 0 and grid_map[prev_y+x-1] == -1:
+                return True
+            if grid_map[prev_y+x] == -1:
+                return True
+            if x+1 < 4000 and grid_map[prev_y+x+1] == -1:
+                return True
+            
+        next_y = y_idx + 4000
+        if next_y < len(grid_map):
+            if x-1 >= 0 and grid_map[next_y+x-1] == -1:
+                return True
+            if grid_map[next_y+x] == -1:
+                return True
+            if x+1 < 4000 and grid_map[next_y+x+1] == -1:
+                return True   
+        return False
     
 if __name__ == "__main__":
     prog = fe_run()
