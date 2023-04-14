@@ -1,16 +1,14 @@
 
 import numpy as np
-from fe import fe_run
+from ..frontier_exploration import fe
 import time
 import sys
-
-sys.path.insert(0, '../frontier_exploration')
 
 ACTIONS = range(0, 12)
 
 class Maze(object):
     def __init__(self):
-        self.fe_state = fe_run()
+        self.fe_state = fe.fe_run()
         self.start_time = time.time()
         pass
 
