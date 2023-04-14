@@ -33,18 +33,18 @@ class Agent(object):
             # set next move to the highest direction in G
             next_move = {"dist": 900, "rad": max(self.G, key=self.G.get)}
         
-        fe_state.move_info = next_move
+        fe_state.move_rl = next_move
         # TODO change 60 to a reasonable time
-        if fe_state.move_info["rad"] < 7:
-            fe_state.turn_time = 28 * fe_state.move_info["rad"]
+        if fe_state.move_rl["rad"] < 7:
+            fe_state.turn_time = 28 * fe_state.move_rl["rad"]
         else:
-            fe_state.turn_time = 28 * abs(fe_state.move_info["rad"] - 12)
+            fe_state.move_rl = 28 * abs(fe_state.move_rl["rad"] - 12)
         fe_state.move_time = 180
         
         return next_move
 
     def update_state_history(self, fe_state, reward):
-        self.state_history.append((fe_state.move_info, reward))
+        self.state_history.append((fe_state.move_rl, reward))
 
     def learn(self):
         target = 0

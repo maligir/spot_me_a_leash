@@ -10,6 +10,7 @@ class Maze(object):
     def __init__(self):
         self.fe_state = fe_run()
         self.start_time = time.time()
+        self.fe_state.run_prog(True)
         pass
 
     def is_game_over(self):

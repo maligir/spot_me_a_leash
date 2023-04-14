@@ -26,6 +26,7 @@ class fe_run:
         self.map_x = -100
         self.map_y = -100
         self.move_info = {"dist": 0, "rad": 0}
+        self.move_rl = {"dist": 0, "rad": 0}
     
     def callback(self, data):
         # convert data to 2d matrix
@@ -102,7 +103,7 @@ class fe_run:
         # self.pos_rad = int(data.pose.pose.orientation.z * 6/np.pi)
         pass
         
-    def run_prog(self):
+    def run_prog(self, rl_commands = False):
         ros_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
         map_sub = rospy.Subscriber('/map', OccupancyGrid, self.callback)
         odom_sub = rospy.Subscriber('/odom', Odometry, self.odom_callback)
@@ -112,18 +113,30 @@ class fe_run:
             # there are two ways to approach this
             # 1. start with dist speed and keep decreasing speed until 0 (looks like its exploring kinda lmao)
             # 2. start with x speed and y rad and keep for s amount of time (more accurate in terms of distance)
-            
-            self.msg.linear.x = 0
-            self.msg.angular.z = 0
-            if self.turn_time > 0:
-                if self.move_info["rad"] < 7:
-                    self.msg.angular.z = 1.15
-                else:
-                    self.msg.angular.z = -1.15
-                self.turn_time -= 1
-            else: # TODO see if this changed anything
-                self.msg.linear.x = 0.4
-                self.move_time -= 1
+            if not rl_commands:
+                self.msg.linear.x = 0
+                self.msg.angular.z = 0
+                if self.turn_time > 0:
+                    if self.move_info["rad"] < 7:
+                        self.msg.angular.z = 1.15
+                    else:
+                        self.msg.angular.z = -1.15
+                    self.turn_time -= 1
+                else: # TODO see if this changed anything
+                    self.msg.linear.x = 0.4
+                    self.move_time -= 1
+            else:
+                self.msg.linear.x = 0
+                self.msg.angular.z = 0
+                if self.turn_time > 0:
+                    if self.move_rl["rad"] < 7:
+                        self.msg.angular.z = 1.15
+                    else:
+                        self.msg.angular.z = -1.15
+                    self.turn_time -= 1
+                else: # TODO see if this changed anything
+                    self.msg.linear.x = 0.4
+                    self.move_time -= 1
             ros_pub.publish(self.msg)
             rate.sleep()
         pass
