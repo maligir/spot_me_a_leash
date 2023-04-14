@@ -36,9 +36,9 @@ class Agent(object):
         fe_state.move_info = next_move
         # TODO change 60 to a reasonable time
         if fe_state.move_info["rad"] < 7:
-            fe_state.turn_time = 28 * self.move_info["rad"]
+            fe_state.turn_time = 28 * fe_state.move_info["rad"]
         else:
-            fe_state.turn_time = 28 * abs(self.move_info["rad"] - 12)
+            fe_state.turn_time = 28 * abs(fe_state.move_info["rad"] - 12)
         fe_state.move_time = 180
         
         return next_move
