@@ -34,6 +34,6 @@ class Maze(object):
             cur = np.array(self.fe_state.cur_map) != -1
             prev = np.array(self.fe_state.prev_map) != -1
             # TODO scale reward
-            return len(cur) - len(prev)
+            return 1 if len(cur) - len(prev) > 0 else -1
 
             # return np.array(self.fe_state.cur_map) != -1 - np.array(self.fe_state.prev_map) != -1

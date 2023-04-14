@@ -14,7 +14,7 @@ class fe_run:
         self.msg.linear.x = 0.0
         self.msg.linear.y = 0.0
         self.msg.linear.z = 0.0
-        self.closed_list = {"dist": np.array([]), "rad": np.array([])}
+        # self.closed_list = {"dist": np.array([]), "rad": np.array([])}
         self.prev_map = None
         self.cur_map = None
         self.turn_time = 0
@@ -25,9 +25,7 @@ class fe_run:
         self.resolution = 0.05
         self.map_x = -100
         self.map_y = -100
-        self.cur_data = None
         self.move_info = {"dist": 0, "rad": 0}
-        self.callback_running = False
     
     def callback(self, data):
         # convert data to 2d matrix
@@ -36,17 +34,15 @@ class fe_run:
         # -1 means unknown
         # 0 means free
         # 100 means occupied
-        self.cur_data = data
-        if self.turn_time < 1 and data != None and not self.callback_running:
-            self.callback_running = True
-            self.prev_map = self.cur_map
+        self.prev_map = self.cur_map
+        if self.turn_time < 1 and self.move_time < 1: # TODO see if this changed anything
             
             # clear open list
             self.open_list["dist"] = []
             self.open_list["rad"] = []
             # add 0,0 to close list
-            self.closed_list["dist"] = np.append(self.closed_list["dist"], [0], axis=0)
-            self.closed_list["rad"] = np.append(self.closed_list["rad"], [0], axis=0)
+            # self.closed_list["dist"] = np.append(self.closed_list["dist"], [0], axis=0)
+            # self.closed_list["rad"] = np.append(self.closed_list["rad"], [0], axis=0)
             
             # get the robots position in the occupancy grid
             # cur_x = int(0 - data.info.origin.position.x / data.info.resolution)
@@ -65,8 +61,8 @@ class fe_run:
                         else:
                             rad = -np.arctan((j-self.pos_x) / (self.pos_y - i))
                         # check if the frontier is already in the closed list
-                        if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"] and dist < 900:
-                            # rospy.loginfo("new frontier %s", dist)
+                        # if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"] and dist < 900:
+                        if dist < 900:
                             self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
                             rad = int(rad * 6/np.pi)
                             if rad < 0:
@@ -78,21 +74,26 @@ class fe_run:
                             self.open_list["y"] = np.append(self.open_list["y"], [i], axis=0)
             # select the farthest frontier
             max_index = np.argmax(self.open_list["dist"])
+            # if self.move_info["dist"] - self.open_list["dist"][max_index] < 0.5:
+            #     self.move_info["rad"] = 0
+            #     return
             self.move_info["dist"] = self.open_list["dist"][max_index]
             # movement is relative to spots orientation
-            self.move_info["rad"] = self.open_list["rad"][max_index]
+            self.move_info["rad"] = self.open_list["rad"][max_index] - self.pos_rad # TODO see if this changed anything
             self.pos_rad = self.open_list["rad"][max_index]
-            rospy.loginfo("Moving %s %s %s %s %s %s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index], self.pos_x, self.pos_y)
-            self.cur_map = data.data
             # mutate close list with the dist and rad of the frontier
-            self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
-            # TODO change 60 to a reasonable time
+            # self.closed_list["rad"] = self.closed_list["rad"] - self.move_info["rad"]
             if self.move_info["rad"] < 7:
                 self.turn_time = 28 * self.move_info["rad"]
             else:
                 self.turn_time = 28 * abs(self.move_info["rad"] - 12)
             self.move_time = 180
-            self.callback_running = False
+        else:
+            self.move_info["rad"] = 0
+            max_index = np.argmax(self.open_list["dist"])
+            self.move_info["dist"] = ((self.pos_x - self.open_list["x"][max_index])**2 + (self.pos_y - self.open_list["y"][max_index])**2)**0.5
+        rospy.loginfo("Moving \ndist:%s rad:%s \ngoal_x:%s goal_y:%s \npos_x:%s pos_y:%s", self.move_info["dist"], self.move_info["rad"], self.open_list["x"][max_index], self.open_list["y"][max_index], self.pos_x, self.pos_y)
+        self.cur_map = data.data
         
     def odom_callback(self, data):
         self.pos_x = int(data.pose.pose.position.x - self.map_x / self.resolution)
@@ -111,7 +112,6 @@ class fe_run:
             # 1. start with dist speed and keep decreasing speed until 0 (looks like its exploring kinda lmao)
             # 2. start with x speed and y rad and keep for s amount of time (more accurate in terms of distance)
             
-            
             self.msg.linear.x = 0
             self.msg.angular.z = 0
             if self.turn_time > 0:
@@ -120,12 +120,10 @@ class fe_run:
                 else:
                     self.msg.angular.z = -1.15
                 self.turn_time -= 1
-            elif self.move_time > 0:
+            else: # TODO see if this changed anything
                 self.msg.linear.x = 0.6
                 self.move_time -= 1
             ros_pub.publish(self.msg)
-            if self.move_time == 0 and self.turn_time == 0:
-                self.callback(self.cur_data)
             rate.sleep()
         pass
     
