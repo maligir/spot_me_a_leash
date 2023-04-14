@@ -62,7 +62,7 @@ class fe_run:
                             rad = -np.arctan((j-self.pos_x) / (self.pos_y - i))
                         # check if the frontier is already in the closed list
                         # if dist not in self.closed_list["dist"] and rad not in self.closed_list["rad"] and dist < 900:
-                        if dist < 900:
+                        if dist < 500:
                             self.open_list["dist"] = np.append(self.open_list["dist"], [dist], axis=0)
                             rad = int(rad * 6/np.pi)
                             if rad < 0:
