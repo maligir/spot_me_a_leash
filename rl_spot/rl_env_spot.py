@@ -1,7 +1,10 @@
 
 import numpy as np
-from ..frontier_exploration.fe import fe_run
+from fe import fe_run
 import time
+import sys
+
+sys.path.insert(0, '../frontier_exploration')
 
 ACTIONS = range(0, 12)
 
